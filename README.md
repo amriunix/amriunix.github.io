@@ -1,2 +1,2 @@
-# amriunix.github.io
+# amriunix.com
 My Personal Blog

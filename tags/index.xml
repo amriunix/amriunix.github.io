@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on InfoSec Blog</title>
+    <link>https://amriunix.com/tags/</link>
+    <description>Recent content in Tags on InfoSec Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 02 Aug 2018 12:09:56 +0100</lastBuildDate>
+    
+	<atom:link href="https://amriunix.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Arduino</title>
+      <link>https://amriunix.com/tags/arduino/</link>
+      <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/arduino/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bluetooth</title>
+      <link>https://amriunix.com/tags/bluetooth/</link>
+      <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/bluetooth/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hc 06</title>
+      <link>https://amriunix.com/tags/hc-06/</link>
+      <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/hc-06/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

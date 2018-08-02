@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://amriunix.com/post/hc-06-bluetooth-in-ubuntu/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/about/</loc>
+    <lastmod>2018-08-01T22:36:24+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/tags/arduino/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/tags/bluetooth/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/categories/embedded-system/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/tags/hc-06/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/categories/linux/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/post/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/tags/</loc>
+    <lastmod>2018-08-02T12:09:56+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>
