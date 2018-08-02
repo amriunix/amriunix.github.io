@@ -28,5 +28,23 @@
       <description></description>
     </item>
     
+    <item>
+      <title>Network</title>
+      <link>https://amriunix.com/categories/network/</link>
+      <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
+      
+      <guid>https://amriunix.com/categories/network/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Programming</title>
+      <link>https://amriunix.com/categories/programming/</link>
+      <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
+      
+      <guid>https://amriunix.com/categories/programming/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

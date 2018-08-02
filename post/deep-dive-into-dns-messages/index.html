@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# website: http://ogp.me/ns/website#">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="">
+    <meta property="og:title" content="Deep dive into DNS messages">
+    
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2018-08-02">
+    
+    <meta property="og:description" content="">
+    <meta property="og:url" content="https://amriunix.com/post/deep-dive-into-dns-messages/">
+    <meta property="og:site_name" content="InfoSec Blog">
+    
+    <meta property="og:tags" content="dns">
+    
+    <meta property="og:tags" content="packet">
+    
+    <meta property="og:tags" content="python">
+    
+    <meta name="generator" content="Hugo 0.46" />
+    <title>Deep dive into DNS messages</title>
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+    
+    <link rel="stylesheet" href="https://amriunix.com/css/style.css">
+    
+    <link href="https://amriunix.com/index.xml" rel="alternate" type="application/rss+xml" title="InfoSec Blog" />
+    
+    
+    <link rel="icon" href="https://amriunix.com/favicon.ico" />
+    
+
+    
+    
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top visible-xs">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			
+				<a class="navbar-brand" href="https://amriunix.com/">AMRIUNIX</a>
+			
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				
+				
+					<li><a href="https://amriunix.com/">Home</a></li>
+				
+					<li><a href="https://amriunix.com/post/">Posts</a></li>
+				
+					<li><a href="https://amriunix.com/about">About</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div id="menu" class="hidden-xs col-sm-4 col-md-3">
+	<div id="menu-content" class="vertical-align">
+		
+			<h1 class="text-center"><a href="https://amriunix.com/">AMRIUNIX</a></h1>
+		
+		
+		
+			<small class="text-center center-block">OUSSAMA AMRI</small>
+		
+		
+		
+			<img id="profile-pic" src="https://amriunix.com//img/amriunix.jpg" alt="My Picture" class="img-circle center-block">
+		
+		<div id="social" class="text-center">
+			
+				<a href="https://github.com/amriunix"><i class="fa fa-github fa-2x"></i></a>
+			
+				<a href="https://twitter.com/amriunix"><i class="fa fa-twitter fa-2x"></i></a>
+			
+				<a href="https://www.linkedin.com/in/amriunix/"><i class="fa fa-linkedin fa-2x"></i></a>
+			
+
+			<a href="mailto:oussama[at]amriunix.com"><i class="fa fa-envelope-o fa-2x"></i></a>
+		</div>
+		<div id="links" class="text-center">
+			
+			
+				<a href="https://amriunix.com/">Home</a>
+			
+				<a href="https://amriunix.com/post/">Posts</a>
+			
+				<a href="https://amriunix.com/about">About</a>
+			
+		</div>
+	</div>
+</div>
+
+		<div id="content" class="col-xs-12 col-sm-8 col-md-9">
+			<div class="row">
+				<div id="post" class="col-sm-offset-1 col-sm-10 col-md-10 col-lg-10">
+
+
+<main>
+	<header>
+		<h1>Deep dive into DNS messages</h1>
+	</header>
+
+	<article>
+		<p>In this Post, I&rsquo;d like to talk about the packet structure of DNS as well as how to implement it into python script to start ask and receive answers about domain resolution.</p>
+
+<p></p>
+
+<h3 id="tl-dr">TL;DR</h3>
+
+<p>DNS is used to map human-readable domain names (such as example.com) to machine-readable IP addresses (like 193.84.16.134). To use DNS, we send a query to a DNS server. This query contains the domain name we’re looking up. The DNS server tries to look up that domain name’s IP address in its internal data store. If it finds it, it returns it. If it can’t find it, the server will forward the query to a different DNS server, which will repeat this process until the IP is found. DNS messages are usually sent using the UDP protocol.</p>
+
+<h3 id="dns-packet-structure">DNS Packet Structure</h3>
+
+<p>All DNS packets have this structure :</p>
+
+<p><img src="../../img/deep-dive-into-dns-messages/dns-message-format.gif" alt="alt text" title="DNS Packet Structure" /></p>
+
+<p>The header describes the type of packet and which fields are contained in the packet. Following the <strong>header</strong> are a number of <strong>questions, answers, authority records</strong>, and <strong>additional records</strong>.
+For this project, we will be ignoring the authority and additional fields, but the client program must accept packets with such fields, but must ignore them.
+Note that a response for a single question may contain multiple answers, such as if an address has multiple IP addresses.</p>
+
+<h3 id="dns-headers">DNS Headers</h3>
+
+<pre><code> 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      ID                       |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    QDCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ANCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    NSCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ARCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</code></pre>
+
+<p><strong>ID</strong> : A 16 bit identifier that generates randomly.  This identifier is the same one when it comes to reply from the DNS server.
+</br>
+<strong>QR</strong> : A one bit field that specifies whether this message is a query (0), or a response (1).
+</br>
+<strong>OPCODE</strong> : A four bit field that specifies kind of query in this message :</p>
+
+<ul>
+<li>0: Standard query</li>
+<li>1: Inverse query</li>
+<li>2: Server status request</li>
+<li>3-15: Reserved for future use</li>
+</ul>
+
+<p><strong>AA</strong> : Authoritative Answer, this bit is only meaningful in responses, and specifies that the responding name server is an authority for the domain name in question section.
+</br>
+<strong>TC</strong> : TrunCation, 1 bit flag specifying if the message has been truncated. Our message is short, and won’t need to be truncated, so we can set this to 0.
+</br>
+<strong>RD</strong> : Recursion Desired, 1 bit flag specifying if recursion is desired. If the DNS server we send our request to doesn’t know the answer to our query, it can recursively ask other DNS servers. We do wish recursion to be enabled, so we will set this to 1.
+</br>
+<strong>RA</strong> : Recursion Available, this be is set (1) or cleared (0) in a response, and denotes whether recursive query support is available in the name server.
+</br>
+<strong>Z</strong> : Reserved for future use, You must set this field to 0.
+</br>
+<strong>RCODE</strong> : Response code - this 4 bit field is set as part of responses.  The values have the following interpretation :</p>
+
+<ul>
+<li>0: No error condition</li>
+<li>1: Format error - The name server was unable to interpret the query.</li>
+<li>2: Server failure - The name server was unable to process this query due to a problem with the name server.</li>
+<li>3: Name Error - Meaningful only for responses from an authoritative name server, this code signifies that the domain name referenced in the query does not exist.</li>
+<li>4: Not Implemented - The name server does not support the requested kind of query.</li>
+<li>5: Refused - The name server refuses to perform the specified operation for policy reasons.</li>
+</ul>
+
+<p><strong>QDCOUNT</strong> : an unsigned 16 bit integer specifying the number of entries in the question section. You should set this field to 1, indicating you have one question.
+</br>
+<strong>ANCOUNT</strong> : an  unsigned  16  bit  integer  specifying  the  number  of  resource  records  in  the  answer section. You should set this field to 0, indicating you are not providing any answers.
+</br>
+<strong>NSCOUNT</strong> : an unsigned 16 bit integer specifying the number of name server resource records in the authority records section. You should set this field to 0, and should ignore any response entries in this section.
+</br>
+<strong>ARCOUNT</strong> : an unsigned 16 bit integer specifying the number of resource records in the additional records section. You should set this field to 0,  and should ignore any response entries in this section.</p>
+
+<h3 id="dns-questions">DNS Questions</h3>
+
+<pre><code> 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+|                     QNAME                     |
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QTYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QCLASS                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</code></pre>
+
+<p><strong>QNAME</strong> : This contains the URL who’s IP address we wish to find. It is encoded as a series of ‘labels’. Each label corresponds to a section of the URL. The URL example.com contains two sections, (A) example, and (B) com. So the first byte will be the length of (A), which is 7 in our example, then we will producing a series of bytes for the full URL (exemple.com) and terminated with a zero byte.
+</br>
+<strong>QTYPE</strong> : A two octet code which specifies the type of the query. You should use 0x0001 for this project,representing A records (host addresses). If you are completing the graduate version of this project, you will also need to use 0x000f for mail server (MX) records and 0x0002 for name servers (NS) records.
+</br>
+<strong>QCLASS</strong> : The class we’re looking up. We’re using the the internet, IN, which has a value of 1.</p>
+
+<h3 id="dns-answers">DNS Answers</h3>
+
+<pre><code> 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+|                                               |
+|                      NAME                     |
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      TYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     CLASS                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      TTL                      |
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                   RDLENGTH                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
+|                     RDATA                     |
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</code></pre>
+
+<p><strong>NAME</strong> : The domain name that was queried, in the same format as the QNAME in the questions.
+</br>
+<strong>TYPE</strong> : Two octets containing one of the type codes.  This field specifies the meaning of the data in the RDATA field. You should be prepared to interpret type 0x0001 (A) and type 0x0005 (CNAME).
+</br>
+<strong>CLASS</strong> : Two octets which specify the class of the data in the RDATA field. You should expect 0x0001 for this project, representing Internet address.
+</br>
+<strong>TTL</strong> : The number of seconds the results can be cached.
+</br>
+<strong>RDLENGTH</strong> : The length of the RDATA field.
+</br>
+<strong>RDATA</strong> : The data of the response. The format is dependent on the TYPE field: if the TYPE is 0x0001 for A records, then this is the IP address (4 octets).
+</br></p>
+
+<h4 id="sources">Sources:</h4>
+
+<ul>
+<li><a href="https://routley.io/tech/2017/12/28/hand-writing-dns-messages.html">routley.io</a></li>
+</ul>
+	</article>
+</main>
+
+<div id="bottom-nav" class="text-center center-block">
+	<a href=" https://amriunix.com/" class="btn btn-default"><i class="fa fa-home"></i> Home</a>
+</div>
+
+
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "amriunix" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </div>
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-51953135-2', 'auto');
+    ga('send', 'pageview');
+    window.baseURL = "https:\/\/amriunix.com\/";
+  </script>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  
+  <script src="https://amriunix.com//js/App.js"></script>
+  
+</body>
+</html>
