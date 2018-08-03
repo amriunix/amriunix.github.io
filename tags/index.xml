@@ -30,6 +30,15 @@
     </item>
     
     <item>
+      <title>Cve</title>
+      <link>https://amriunix.com/tags/cve/</link>
+      <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/cve/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Dns</title>
       <link>https://amriunix.com/tags/dns/</link>
       <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
@@ -62,6 +71,24 @@
       <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rce</title>
+      <link>https://amriunix.com/tags/rce/</link>
+      <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/rce/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Samba</title>
+      <link>https://amriunix.com/tags/samba/</link>
+      <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/samba/</guid>
       <description></description>
     </item>
     
