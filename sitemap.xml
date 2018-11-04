@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://amriunix.com/post/sigreturn-oriented-programming-srop/</loc>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</loc>
     <lastmod>2018-08-03T22:00:06+01:00</lastmod>
   </url>
@@ -58,8 +63,20 @@
   </url>
   
   <url>
+    <loc>https://amriunix.com/tags/exploit/</loc>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://amriunix.com/categories/exploit/</loc>
     <lastmod>2018-08-03T22:00:06+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/categories/exploit-development/</loc>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -71,7 +88,13 @@
   
   <url>
     <loc>https://amriunix.com/</loc>
-    <lastmod>2018-08-03T22:00:06+01:00</lastmod>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/tags/linux/</loc>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -95,7 +118,7 @@
   
   <url>
     <loc>https://amriunix.com/post/</loc>
-    <lastmod>2018-08-03T22:00:06+01:00</lastmod>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -125,7 +148,13 @@
   
   <url>
     <loc>https://amriunix.com/categories/security/</loc>
-    <lastmod>2018-08-03T22:00:06+01:00</lastmod>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://amriunix.com/tags/srop/</loc>
+    <lastmod>2018-11-04T11:23:06+01:00</lastmod>
     <priority>0</priority>
   </url>
   

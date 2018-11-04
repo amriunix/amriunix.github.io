@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Security on InfoSec Blog</title>
-    <link>https://amriunix.com/categories/security/</link>
-    <description>Recent content in Security on InfoSec Blog</description>
+    <title>Linux on InfoSec Blog</title>
+    <link>https://amriunix.com/tags/linux/</link>
+    <description>Recent content in Linux on InfoSec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 04 Nov 2018 11:23:06 +0100</lastBuildDate>
     
-	<atom:link href="https://amriunix.com/categories/security/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://amriunix.com/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,17 +18,6 @@
       
       <guid>https://amriunix.com/post/sigreturn-oriented-programming-srop/</guid>
       <description>&lt;p&gt;Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>CVE-2007-2447 - Samba usermap script</title>
-      <link>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</link>
-      <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
-      
-      <guid>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</guid>
-      <description>&lt;p&gt;Samba 3.0.0 - 3.0.25rc3 are subject for Remote Command Injection Vulnerability (CVE-2007-2447), allows remote attackers to execute arbitrary commands by specifying a username containing shell meta characters.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>

