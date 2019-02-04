@@ -17,9 +17,7 @@
       <pubDate>Sun, 04 Nov 2018 11:23:06 +0100</pubDate>
       
       <guid>https://amriunix.com/post/sigreturn-oriented-programming-srop/</guid>
-      <description>&lt;p&gt;Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.&lt;/p&gt;</description>
     </item>
     
   </channel>

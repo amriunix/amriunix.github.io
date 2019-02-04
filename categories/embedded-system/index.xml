@@ -17,9 +17,7 @@
       <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
       
       <guid>https://amriunix.com/post/hc-06-bluetooth-in-ubuntu/</guid>
-      <description>&lt;p&gt;In this article we going see how to connect HC-06 Bluetooth in Ubuntu, which is commonly using in embedded systems such arduino. But this time we will see how to use it with linux in order to interact with bluetooth channels.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;In this article we going see how to connect HC-06 Bluetooth in Ubuntu, which is commonly using in embedded systems such arduino. But this time we will see how to use it with linux in order to interact with bluetooth channels.&lt;/p&gt;</description>
     </item>
     
   </channel>

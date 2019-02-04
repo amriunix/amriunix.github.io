@@ -17,9 +17,7 @@
       <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
       
       <guid>https://amriunix.com/post/deep-dive-into-dns-messages/</guid>
-      <description>&lt;p&gt;In this Post, I&amp;rsquo;d like to talk about the packet structure of DNS as well as how to implement it into python script to start ask and receive answers about domain resolution.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;In this Post, I&amp;rsquo;d like to talk about the packet structure of DNS as well as how to implement it into python script to start ask and receive answers about domain resolution.&lt;/p&gt;</description>
     </item>
     
   </channel>

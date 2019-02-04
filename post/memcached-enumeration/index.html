@@ -4,19 +4,25 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <meta name="description" content="">
-    <meta property="og:title" content="About">
+    <meta property="og:title" content="Memcached Enumeration">
     
     <meta property="og:type" content="article">
-    <meta property="article:published_time" content="2018-08-01">
+    <meta property="article:published_time" content="2019-02-04">
     
     <meta property="og:description" content="">
-    <meta property="og:url" content="https://amriunix.com/about/">
+    <meta property="og:url" content="https://amriunix.com/post/memcached-enumeration/">
     <meta property="og:site_name" content="InfoSec Blog">
     
+    <meta property="og:tags" content="cache">
+    
+    <meta property="og:tags" content="linux">
+    
     <meta name="generator" content="Hugo 0.54.0" />
-    <title>About</title>
+    <title>Memcached Enumeration</title>
     
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">
     
     <link rel="stylesheet" href="https://amriunix.com/css/style.css">
     
@@ -104,39 +110,117 @@
 
 <main>
 	<header>
-		<h1>About</h1>
+		<h1>Memcached Enumeration</h1>
 	</header>
 
 	<article>
-		<pre><code class="language-shell">$ whoami
+		<p>A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&rsquo;d like to talk about it and how to extract informations from it.</p>
+
+<h3 id="tl-dr">TL;DR</h3>
+
+<p><a href="https://memcached.org/">Memcached</a> is a distributed memory object caching system, is an in-memory key-value store for small chunks of arbitrary data (strings, objects) from results of database calls, API calls, or page rendering.</p>
+
+<h3 id="security">Security</h3>
+
+<p><img src="../../img/memcached-enumeration/memchached-tcp-port.png" alt="alt text" title="Memcached TCP Port" /></p>
+
+<p>Memcached expose TCP port <strong>11211</strong> and bind it on localhost, however it&rsquo;s still possible to communicate with this port via SSRF or literary movement techniques.</p>
+
+<h3 id="protocol">Protocol</h3>
+
+<p>Clients of memcached communicate with server through TCP connections. A simple raw commands can be performed to do various things with memcached.</p>
+
+<p><img src="../../img/memcached-enumeration/memcached-cheat-sheet.png" alt="alt text" title="Memcached Cheat Sheet" /></p>
+
+<p>More Commands can be found <a href="https://github.com/memcached/memcached/blob/master/doc/protocol.txt">here.</a></p>
+
+<h3 id="memcached-extractor">Memcached Extractor</h3>
+
+<p>Now let&rsquo;s see how to extracts the slabs from a memcached instance and then finds the keys and values stored in those slabs.</br>
+First, let&rsquo;s connect to the server using <code>netcat</code></p>
+
+<blockquote>
+<p><code>nc 127.0.0.1 11211</code></p>
+</blockquote>
+
+<p>After successfully connected, let&rsquo;s print memory statistics with :</p>
+
+<blockquote>
+<p><code>stats slabs</code></p>
+</blockquote>
+
+<pre><code class="language-text">STAT 16:chunk_size 2904
+STAT 16:chunks_per_page 361
+STAT 16:total_pages 1
+STAT 16:total_chunks 361
+STAT 16:used_chunks 0
+STAT 16:free_chunks 361
+STAT 16:free_chunks_end 0
+STAT 16:mem_requested 0
+STAT 16:get_hits 14
+STAT 16:cmd_set 7
+STAT 16:delete_hits 0
+STAT 16:incr_hits 0
+STAT 16:decr_hits 0
+STAT 16:cas_hits 0
+STAT 16:cas_badval 0
+STAT 16:touch_hits 0
+STAT 26:chunk_size 27120
+STAT 26:chunks_per_page 38
+STAT 26:total_pages 1
+STAT 26:total_chunks 38
+STAT 26:used_chunks 0
+STAT 26:free_chunks 38
+STAT 26:free_chunks_end 0
+STAT 26:mem_requested 0
+STAT 26:get_hits 7046
+STAT 26:cmd_set 33
+STAT 26:delete_hits 0
+STAT 26:incr_hits 0
+STAT 26:decr_hits 0
+STAT 26:cas_hits 0
+STAT 26:cas_badval 0
+STAT 26:touch_hits 0
+STAT active_slabs 2
+STAT total_malloced 2078904
+END
 </code></pre>
 
-<p>My name is <strong>Oussama Amri</strong>, usually going by the alias &ldquo;amriunix&rdquo;, born in 1994 and I’m currently a engineering student in Cyber Security at <a href="http://tek-up.de/">TEK-UP University</a>.</p>
+<p>If you notice in our example we have two different values <strong>16</strong> and <strong>26</strong>. We will using those values to fetch for the key&rsquo;s names associated with them.</p>
 
-<pre><code class="language-shell">$ contact
+<blockquote>
+<p><code>stats cachedump 16 0</code></p>
+</blockquote>
+
+<pre><code class="language-text">ITEM stock [2807 b; 1549317135 s]
+END
 </code></pre>
 
-<p>If you would like to contact me, feel free to do so at any of the usual places:</p>
+<blockquote>
+<p><code>stats cachedump 26 0</code></p>
+</blockquote>
+
+<pre><code class="language-text">ITEM users [24625 b; 1549317140 s]
+END
+</code></pre>
+
+<p>As you can see now we have the key&rsquo;s names which are <code>stock</code> and <code>users</code>, now let&rsquo;s extract all the data associated with those keys with the command :</p>
+
+<blockquote>
+<p><code>get stock</code></p>
+</blockquote>
+
+<pre><code class="language-text">VALUE stock 0 2807
+{&quot;1&quot;: {&quot;product&quot;: &quot;Apples - Sliced / Wedge&quot;, &quot;qty&quot;: 568}, &quot;2&quot;: {&quot;product&quot;: &quot;Appetizer - Tarragon Chicken&quot;, &quot;qty&quot;: 16}}
+</code></pre>
+
+<h4 id="sources">Sources:</h4>
 
 <ul>
-<li><a href="https://twitter.com/amriunix">Twitter</a></li>
-<li><a href="https://keybase.io/amriunix">Keybase</a></li>
-<li><a href="https://github.com/amriunix">Github</a></li>
-<li><a href="https://www.linkedin.com/in/amriunix/">LinkedIn</a></li>
-<li><a href="mailto:oussama[at]amriunix.com">Email</a></li>
+<li><a href="https://lzone.de//cheat-sheet/memcached">lzone.de</a></li>
+<li><a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/gather/memcached_extractor.rb">MSF</a>
+</br></li>
 </ul>
-
-<pre><code class="language-shell">$ certifications
-</code></pre>
-
-<ul>
-<li>Offensive Security Certified Expert (OSCE)</li>
-<li>Offensive Security Certified Professional (OSCP)</li>
-<li>Offensive Security Wireless Professional (OSWP)</li>
-<li>Certified Ethical Hacker (CEH)</li>
-<li>Palo Alto Networks Accredited Configuration Engineer (ACE)</li>
-</ul>
-
 	</article>
 </main>
 
@@ -188,6 +272,8 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
   
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
   
   <script src="https://amriunix.com//js/App.js"></script>
   
