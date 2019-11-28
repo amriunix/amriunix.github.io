@@ -17,7 +17,9 @@
       <pubDate>Mon, 04 Feb 2019 20:43:23 +0100</pubDate>
       
       <guid>https://amriunix.com/post/memcached-enumeration/</guid>
-      <description>&lt;p&gt;A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&amp;rsquo;d like to talk about it and how to extract informations from it.&lt;/p&gt;</description>
+      <description>&lt;p&gt;A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&amp;rsquo;d like to talk about it and how to extract informations from it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -26,7 +28,9 @@
       <pubDate>Sun, 04 Nov 2018 11:23:06 +0100</pubDate>
       
       <guid>https://amriunix.com/post/sigreturn-oriented-programming-srop/</guid>
-      <description>&lt;p&gt;Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -35,7 +39,9 @@
       <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
       
       <guid>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</guid>
-      <description>&lt;p&gt;Samba 3.0.0 - 3.0.25rc3 are subject for Remote Command Injection Vulnerability (CVE-2007-2447), allows remote attackers to execute arbitrary commands by specifying a username containing shell meta characters.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Samba 3.0.0 - 3.0.25rc3 are subject for Remote Command Injection Vulnerability (CVE-2007-2447), allows remote attackers to execute arbitrary commands by specifying a username containing shell meta characters.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,7 +50,9 @@
       <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
       
       <guid>https://amriunix.com/post/deep-dive-into-dns-messages/</guid>
-      <description>&lt;p&gt;In this Post, I&amp;rsquo;d like to talk about the packet structure of DNS as well as how to implement it into python script to start ask and receive answers about domain resolution.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In this Post, I&amp;rsquo;d like to talk about the packet structure of DNS as well as how to implement it into python script to start ask and receive answers about domain resolution.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -53,7 +61,9 @@
       <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
       
       <guid>https://amriunix.com/post/hc-06-bluetooth-in-ubuntu/</guid>
-      <description>&lt;p&gt;In this article we going see how to connect HC-06 Bluetooth in Ubuntu, which is commonly using in embedded systems such arduino. But this time we will see how to use it with linux in order to interact with bluetooth channels.&lt;/p&gt;</description>
+      <description>&lt;p&gt;In this article we going see how to connect HC-06 Bluetooth in Ubuntu, which is commonly using in embedded systems such arduino. But this time we will see how to use it with linux in order to interact with bluetooth channels.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -62,9 +72,10 @@
       <pubDate>Wed, 01 Aug 2018 22:36:24 +0100</pubDate>
       
       <guid>https://amriunix.com/about/</guid>
-      <description>$ whoami  My name is Oussama Amri, usually going by the alias &amp;ldquo;amriunix&amp;rdquo;, born in 1994 and I’m currently a engineering student in Cyber Security at TEK-UP University.
-$ contact  If you would like to contact me, feel free to do so at any of the usual places:
- Twitter Keybase Github LinkedIn Email  $ certifications   Offensive Security Certified Expert (OSCE) Offensive Security Certified Professional (OSCP) Offensive Security Wireless Professional (OSWP) Certified Ethical Hacker (CEH) Palo Alto Networks Accredited Configuration Engineer (ACE)  </description>
+      <description>$ whoami  My name is Oussama Amri, usually going by the alias &amp;ldquo;amriunix&amp;rdquo;.
+More than ten years of self made experience in Information Security of various environments.
+Performed dozens of web application pentesting/hardening tasks (Black/White box), Source code auditing/hardening, network penetration testing, 802.11 penetration testing, binary exploitation and Familiar with multiple scripting languages along with arsenal of penetration testing tools.
+$ contact  If you would like to contact me, feel free to do so at any of the usual places:</description>
     </item>
     
   </channel>

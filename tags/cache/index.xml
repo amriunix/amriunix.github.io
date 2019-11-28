@@ -17,7 +17,9 @@
       <pubDate>Mon, 04 Feb 2019 20:43:23 +0100</pubDate>
       
       <guid>https://amriunix.com/post/memcached-enumeration/</guid>
-      <description>&lt;p&gt;A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&amp;rsquo;d like to talk about it and how to extract informations from it.&lt;/p&gt;</description>
+      <description>&lt;p&gt;A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&amp;rsquo;d like to talk about it and how to extract informations from it.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -17,7 +17,9 @@
       <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
       
       <guid>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</guid>
-      <description>&lt;p&gt;Samba 3.0.0 - 3.0.25rc3 are subject for Remote Command Injection Vulnerability (CVE-2007-2447), allows remote attackers to execute arbitrary commands by specifying a username containing shell meta characters.&lt;/p&gt;</description>
+      <description>&lt;p&gt;Samba 3.0.0 - 3.0.25rc3 are subject for Remote Command Injection Vulnerability (CVE-2007-2447), allows remote attackers to execute arbitrary commands by specifying a username containing shell meta characters.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>
