@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>Bash</title>
+      <link>https://amriunix.com/tags/bash/</link>
+      <pubDate>Thu, 28 Nov 2019 23:13:39 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/bash/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Bluetooth</title>
       <link>https://amriunix.com/tags/bluetooth/</link>
       <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
@@ -41,7 +50,7 @@
     <item>
       <title>Cve</title>
       <link>https://amriunix.com/tags/cve/</link>
-      <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
+      <pubDate>Thu, 28 Nov 2019 23:13:39 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/cve/</guid>
       <description></description>
@@ -89,6 +98,15 @@
       <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/packet/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Privilege Escalation</title>
+      <link>https://amriunix.com/tags/privilege-escalation/</link>
+      <pubDate>Thu, 28 Nov 2019 23:13:39 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/privilege-escalation/</guid>
       <description></description>
     </item>
     

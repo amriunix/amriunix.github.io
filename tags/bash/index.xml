@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Cve on InfoSec Blog</title>
-    <link>https://amriunix.com/tags/cve/</link>
-    <description>Recent content in Cve on InfoSec Blog</description>
+    <title>Bash on InfoSec Blog</title>
+    <link>https://amriunix.com/tags/bash/</link>
+    <description>Recent content in Bash on InfoSec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 28 Nov 2019 23:13:39 +0100</lastBuildDate>
     
-	<atom:link href="https://amriunix.com/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://amriunix.com/tags/bash/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,17 +18,6 @@
       
       <guid>https://amriunix.com/post/cve-2019-18276-suidbash/</guid>
       <description>&lt;p&gt;This exploit was initially based on an older vulnerability back in 1999 (&lt;code&gt;suidperl&lt;/code&gt;). Now after 20 years in 2019 we found the same vulnerability in bash (&lt;code&gt;CVE-2019-18276&lt;/code&gt;) discovered by Ian Pudney.&lt;/p&gt;
-
-&lt;p&gt;&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>CVE-2007-2447 - Samba usermap script</title>
-      <link>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</link>
-      <pubDate>Fri, 03 Aug 2018 22:00:06 +0100</pubDate>
-      
-      <guid>https://amriunix.com/post/cve-2007-2447-samba-usermap-script/</guid>
-      <description>&lt;p&gt;Samba 3.0.0 - 3.0.25rc3 are subject for Remote Command Injection Vulnerability (CVE-2007-2447), allows remote attackers to execute arbitrary commands by specifying a username containing shell meta characters.&lt;/p&gt;
 
 &lt;p&gt;&lt;/p&gt;</description>
     </item>
