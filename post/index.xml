@@ -6,10 +6,21 @@
     <description>Recent content in Posts on InfoSec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Nov 2019 23:13:39 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 29 Nov 2019 17:03:16 +0100</lastBuildDate>
     
 	<atom:link href="https://amriunix.com/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>From read@GLIBC to RCE in X86_64</title>
+      <link>https://amriunix.com/post/from-read-glibc-to-rce-x86_64/</link>
+      <pubDate>Fri, 29 Nov 2019 17:03:16 +0100</pubDate>
+      
+      <guid>https://amriunix.com/post/from-read-glibc-to-rce-x86_64/</guid>
+      <description>&lt;p&gt;While playing some pwn in &lt;strong&gt;HackZone&lt;/strong&gt; CTF, i figured out a new technique for Arbitrary Code Execution only by using the &lt;code&gt;read&lt;/code&gt; function from libc.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>CVE-2019-18276 - Suidbash</title>
