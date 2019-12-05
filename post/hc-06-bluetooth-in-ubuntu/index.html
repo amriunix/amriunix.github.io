@@ -116,17 +116,17 @@
 	</header>
 
 	<article>
-		<p>In this article we going see how to connect HC-06 Bluetooth in Ubuntu, which is commonly using in embedded systems such arduino. But this time we will see how to use it with linux in order to interact with bluetooth channels.</p>
+		<p>In this article we are going see how to connect HC-06 Bluetooth in Ubuntu, which is commonly used in embedded systems such as arduino. But this time we will see how to use it with linux in order to interact with bluetooth channels.</p>
 
 <p></p>
 
-<p>So first thing we need to pair this device with ubuntu using the Bluetooth GUI in Ubuntu .</p>
+<p>So first thing first we need to pair this device with ubuntu using the Bluetooth GUI in Ubuntu .</p>
 
 <p><img src="../../img/hc-06-bluetooth-in-ubuntu/hc-06.png" alt="alt text" title="HC-06" /></p>
 
 <p>Select the device and make sure you set up the Pin Option to &lsquo;1234&rsquo;.</p>
 
-<p>Then, Open Terminal and make sure that you can see the device !</p>
+<p>Then, Open the Terminal and make sure that you can see the device !</p>
 
 <pre><code class="language-shell">$ hcitool scan
 </code></pre>
@@ -154,7 +154,7 @@
     }
 </code></pre>
 
-<p>Make sure you change the device to you&rsquo;re HC-06 Module Address !.</p>
+<p>Make sure you change the device to your HC-06 Module Address !.</p>
 
 <p>Finally, bind the device with :</p>
 
@@ -166,7 +166,7 @@
 <pre><code class="language-shell">$ sudo minicom -D /dev/rfcomm0 -b 9600 -8
 </code></pre>
 
-<p>and don&rsquo;t forget to release the device when you finishing</p>
+<p>and don&rsquo;t forget to release the device when you finished</p>
 
 <pre><code class="language-shell">$ sudo rfcomm release rfcomm0
 </code></pre>

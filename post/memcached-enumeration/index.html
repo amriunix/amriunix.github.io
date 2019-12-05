@@ -126,7 +126,7 @@
 
 <p><img src="../../img/memcached-enumeration/memchached-tcp-port.png" alt="alt text" title="Memcached TCP Port" /></p>
 
-<p>Memcached expose TCP port <strong>11211</strong> and bind it on localhost, however it&rsquo;s still possible to communicate with this port via SSRF or literary movement techniques.</p>
+<p>Memcached exposes TCP port <strong>11211</strong> and bind it to localhost, however it&rsquo;s still possible to communicate with this port via SSRF or literary movement techniques.</p>
 
 <h3 id="protocol">Protocol</h3>
 
@@ -138,7 +138,7 @@
 
 <h3 id="memcached-extractor">Memcached Extractor</h3>
 
-<p>Now let&rsquo;s see how to extracts the slabs from a memcached instance and then finds the keys and values stored in those slabs.</br>
+<p>Now let&rsquo;s see how to extract the slabs from a memcached instance and then find the keys and values stored in those slabs.</br>
 First, let&rsquo;s connect to the server using <code>netcat</code></p>
 
 <blockquote>
@@ -188,7 +188,7 @@ STAT total_malloced 2078904
 END
 </code></pre>
 
-<p>If you notice in our example we have two different values <strong>16</strong> and <strong>26</strong>. We will using those values to fetch for the key&rsquo;s names associated with them.</p>
+<p>If you notice in our example we have two different values <strong>16</strong> and <strong>26</strong>. We will be using those values to fetch the key&rsquo;s names associated with them.</p>
 
 <blockquote>
 <p><code>stats cachedump 16 0</code></p>
