@@ -77,7 +77,7 @@
     <item>
       <title>Exploit</title>
       <link>https://amriunix.com/tags/exploit/</link>
-      <pubDate>Fri, 29 Nov 2019 17:03:16 +0100</pubDate>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/exploit/</guid>
       <description></description>
@@ -89,6 +89,15 @@
       <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/hc-06/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kernel</title>
+      <link>https://amriunix.com/tags/kernel/</link>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/kernel/</guid>
       <description></description>
     </item>
     
@@ -147,11 +156,38 @@
     </item>
     
     <item>
+      <title>Shellcode</title>
+      <link>https://amriunix.com/tags/shellcode/</link>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/shellcode/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Srop</title>
       <link>https://amriunix.com/tags/srop/</link>
       <pubDate>Sun, 04 Nov 2018 11:23:06 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/srop/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Token</title>
+      <link>https://amriunix.com/tags/token/</link>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/token/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Windows</title>
+      <link>https://amriunix.com/tags/windows/</link>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/windows/</guid>
       <description></description>
     </item>
     

