@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# website: http://ogp.me/ns/website#">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="">
+    <meta property="og:title" content="OAuth 2.0 - What could go wrong">
+    
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2020-08-30">
+    
+    <meta property="og:description" content="">
+    <meta property="og:url" content="https://amriunix.com/post/oauth-2.0-what-could-go-wrong/">
+    <meta property="og:site_name" content="InfoSec Blog">
+    
+    <meta property="og:tags" content="csrf">
+    
+    <meta property="og:tags" content="oauth">
+    
+    <meta property="og:tags" content="jwt">
+    
+    <meta name="generator" content="Hugo 0.50" />
+    <title>OAuth 2.0 - What could go wrong</title>
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/default.min.css">
+    
+    <link rel="stylesheet" href="https://amriunix.com/css/style.css">
+    
+    <link href="https://amriunix.com/index.xml" rel="alternate" type="application/rss+xml" title="InfoSec Blog" />
+    
+    
+    <link rel="icon" href="https://amriunix.com/favicon.ico" />
+    
+
+    
+    
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top visible-xs">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			
+				<a class="navbar-brand" href="https://amriunix.com/">AMRIUNIX</a>
+			
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				
+				
+					<li><a href="https://amriunix.com/">Home</a></li>
+				
+					<li><a href="https://amriunix.com/post/">Posts</a></li>
+				
+					<li><a href="https://amriunix.com/about">About</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+<div class="container-fluid">
+	<div class="row">
+		<div id="menu" class="hidden-xs col-sm-4 col-md-3">
+	<div id="menu-content" class="vertical-align">
+		
+			<h1 class="text-center"><a href="https://amriunix.com/">AMRIUNIX</a></h1>
+		
+		
+		
+			<small class="text-center center-block">OUSSAMA AMRI</small>
+		
+		
+		
+			<img id="profile-pic" src="https://amriunix.com//img/amriunix.png" alt="My Picture" class="img-circle center-block">
+		
+		<div id="social" class="text-center">
+			
+				<a href="https://github.com/amriunix"><i class="fa fa-github fa-2x"></i></a>
+			
+				<a href="https://twitter.com/amriunix"><i class="fa fa-twitter fa-2x"></i></a>
+			
+				<a href="https://www.linkedin.com/in/amriunix/"><i class="fa fa-linkedin fa-2x"></i></a>
+			
+
+			<a href="mailto:oussama[at]amriunix.com"><i class="fa fa-envelope-o fa-2x"></i></a>
+		</div>
+		<div id="links" class="text-center">
+			
+			
+				<a href="https://amriunix.com/">Home</a>
+			
+				<a href="https://amriunix.com/post/">Posts</a>
+			
+				<a href="https://amriunix.com/about">About</a>
+			
+		</div>
+	</div>
+</div>
+
+		<div id="content" class="col-xs-12 col-sm-8 col-md-9">
+			<div class="row">
+				<div id="post" class="col-sm-offset-1 col-sm-10 col-md-10 col-lg-10">
+
+
+<main>
+	<header>
+		<h1>OAuth 2.0 - What could go wrong</h1>
+	</header>
+
+	<article>
+		<p>Nowadays modern web applications may implement or use <code>OAuth 2.0</code> for there own services. In this post we will understand how OAuth 2.0 works and how it can present vulnerabilities.</p>
+
+<p></p>
+
+<h3 id="tl-dr">TL;DR</h3>
+
+<p><code>OAuth 2.0</code> is an authorization framework defines a set of protocols that allow an application (<code>Client</code>) to obtain authorization grants (permissions) from <code>Authorization-Server</code> for certain resources/actions of a <code>Resource-Owner</code> from the <code>Resource-Server</code>.</p>
+
+<h3 id="terminology">Terminology</h3>
+
+<p>Let&rsquo;s define each actor of an OAuth2.0 framework:</p>
+
+<ul>
+<li><code>Client</code>: The application accessed by the <strong>Resource-Owner</strong> that would like to obtain authorization grants (permissions) from <strong>Authorization-Server</strong>.</li>
+<li><code>Authorization-Server</code>: The centralized server responsible to give authorization grants (permissions) to the <strong>client</strong> after the the <strong>Resource-Owner</strong> approve for that.</li>
+<li><code>Resource-Owner</code>: The end-user who will consent to permissions and authenticate.</li>
+<li><code>Resource-Server</code>: The server that provide API services to the <strong>CLient</strong> for certain resources/actions of a <strong>Resource-Owner</strong>.</li>
+</ul>
+
+<h3 id="specifications">Specifications</h3>
+
+<p>OAuth2.0 provides 4 protocols of <code>authorization flows</code>:</p>
+
+<ul>
+<li><strong>Authorization Code</strong></li>
+<li><strong>Resource Owner Password Credentials</strong></li>
+<li><strong>Implicit</strong></li>
+<li><strong>Client Credentials</strong></li>
+</ul>
+
+<h3 id="jwt-json-web-token">JWT (JSON Web Token)</h3>
+
+<p><code>JWT</code> play an important part in OAuth 2.0. Because the <strong>Client</strong> use <strong>JWT</strong> token to authenticate with the <strong>Resource-Server</strong> in order to use it&rsquo;s API.
+Depending of the The <code>authorization flows</code> being used, the <strong>Authorization-Server</strong> provide the <strong>Client</strong> with two types of Tokens: <code>Access Token</code> and <code>Refresh Token</code>. Anyone with a valid Access Token can access protected resources; usually it is short-lived. When an Access Token expires, developers can use an optional Refresh Token to request a new Access Token without having to ask the <strong>Resource-Owner</strong> to enter their credentials again.</p>
+
+<h3 id="authorization-code">Authorization Code</h3>
+
+<p>In this post we only cover <strong>Authorization Code</strong>, since it&rsquo;s mostly widely use for common OAuth 2.0 :</p>
+
+<h4 id="step-1">Step 1</h4>
+
+<p>The <strong>Resource-Owner</strong> (user) will ask for connecting his external account (facebook, twitter, etc&hellip;) using OAuth 2.0 with the his current account on the <strong>Client</strong> web applications his using it !</p>
+
+<blockquote>
+<p>So next time, the <strong>Resource-Owner</strong> (user) can use his second account (e.g. facebook) to connect to the web application.</p>
+</blockquote>
+
+<h4 id="step-2">Step 2</h4>
+
+<p>The <strong>Client</strong> will prepare a link for the <strong>Resource-Owner</strong> to visit the <strong>Authorization-Server</strong>&rsquo;s /auth endpoint (facebook, twitter, etc&hellip;) with pre-defined parameters that allows the authorization server to identify and respond to the client.</p>
+
+<pre><code class="language-html">&lt;form action=&quot;Authorization-Server/auth&quot; method=&quot;GET&quot;&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;response_type&quot;, value=&quot;code&quot;/&gt;
+    &lt;input type=&quot;text&quot; name=&quot;scope&quot;, value=&quot;read write&quot;/&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;client_id&quot;, value=${client_id}/&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;state&quot;, value=&quot;xyzABC123&quot;/&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;redirect_uri&quot;, value=&quot;Client/callback&quot;/&gt;
+    &lt;button type=&quot;submit&quot;&gt;Connect&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+
+<blockquote>
+<p>The state token</p>
+</blockquote>
+
+<h4 id="step-3">Step 3</h4>
+
+<p>The <strong>Resource-Owner</strong> will access to the <strong>Authorization-Server</strong>&rsquo;s /auth endpoint and enter his credentials to login, then the <strong>Authorization-Server</strong> will ask the <strong>Resource-Owner</strong> if he wants to authorize the <strong>client</strong> to access (read, write) on his account.</p>
+
+<pre><code class="language-html">&lt;form action=&quot;Authorization-Server/auth&quot; method=&quot;POST&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;scope&quot;, value=&quot;read write&quot;/&gt;
+    &lt;input type=&quot;hidden&quot; name=&quot;CSRF&quot;, value=&quot;EDNQfCgZAubBEso5K7H4QDKQml0&quot;/&gt;
+    &lt;button type=&quot;submit&quot;&gt;I Authorize&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+
+<h4 id="step-4">Step 4</h4>
+
+<p>After the <strong>Resource-Owner</strong> authenticate and click on <code>I Authorize</code> button, the <strong>Authorization-Server</strong> will send him back the the <strong>client</strong> callback (<code>redirect_uri</code>) with the <code>state</code> token and the <code>code</code> temporary token.</p>
+
+<pre><code class="language-php">&lt;?php
+header('Location: http://Client/callback?code=sXlSiABqwsXP9PQL1CR9MjOUm8JCJU&amp;state=xyzABC123');
+exit;
+?&gt;
+</code></pre>
+
+<h4 id="step-5">Step 5</h4>
+
+<p>The <strong>Client</strong> callback endpoint will be triggered once the <strong>Authorization-Server</strong> redirect the <strong>Resource-Owner</strong> to the callback endpoint. The <strong>Client</strong> will verify the state token and then he will ask for an Access Token from the <strong>Authorization-Server</strong>.</p>
+
+<pre><code class="language-php">&lt;?php
+// The code token from the callback
+$code_token = $_GET['code'];
+
+// Your Client_ID and Client_Secret
+$client_id = '920543249955';
+$client_secret = 'U7mSUi08f8D2wPvMMrT3ovo3wJdiYR';
+
+// The data to send to the API
+$postData = array(
+    'client_id' =&gt; $client_id,
+    'client_secret' =&gt; $client_secret,
+    'code' =&gt; $code_token
+);
+
+// Setup cURL
+$ch = curl_init('http://Authorization-Server/token');
+curl_setopt_array($ch, array(
+    CURLOPT_POST =&gt; TRUE,
+    CURLOPT_RETURNTRANSFER =&gt; TRUE,
+    CURLOPT_HTTPHEADER =&gt; array(
+        'Content-Type: application/json'
+    ),
+    CURLOPT_POSTFIELDS =&gt; json_encode($postData)
+));
+
+// Send the request
+$response = curl_exec($ch);
+
+// Check for errors
+if($response === FALSE){
+    die(curl_error($ch));
+}
+
+// Decode the response (JWT Tokens)
+$responseData = json_decode($response, TRUE);
+
+// JWT Tokens
+/*
+$responseData = {
+    &quot;access-token&quot; = &quot;eJy9j8tOAzEMRX8lzbpCeWfcr0CwYIGqynGcNmI6gyYzElLVfyfAEtasrCvfI_vc5KmM2C7c5OH1JsXah7xya3hmuZePI2NjMc5nUSexzgKJ-lKsl9rEe-88yON9_5t74nNt64JrnSfxvH1DZRt34oVHmq8s8LrUbaofu7_5f7l73Hf5hdtFHgqOjXusWR5kdsqQ0Wx8UYVyQgVgPXhXBmtzAI4lYjbKpagSmOIi6QAhFCZnVfQQPGtjw6DJe1aeh1IAsgMgP7D-oklF5bPKCo0KGqIKsZPZ6QGZuge1pZzW-Y2n_g-hNy6jdl-1SIV8Ao9uMNHiEFOyNiaElDu3NV5-JIy8fwJq3pTL.X0mSOA.ctt-kWanNZtvtj6xOw6dKhGvQLY&quot;,
+    &quot;refresh-token&quot; = &quot;eJy9j8tOAzEMRX8lzbpCeWfcr0CwYIGqynGcNmI6gyYzElLVfyfAEtasrCvfI_vc5KmM2C7c5OH1JsXah7xya3hmuZePI2NjMc5nUSexzgKJ-lKsl9rEe-88yON9_5t74nNt64JrnSfxvH1DZRt34oVHmq8s8LrUbaofu7_5f7l73Hf5hdtFHgqOjXusWR5kdsqQ0Wx8UYVyQgVgPXhXBmtzAI4lYjbKpagSmOIi6QAhFCZnVfQQPGtjw6DJe1aeh1IAsgMgP7D-oklF5bPKCo0KGqIKsZPZ6QGZuge1pZzW-Y2n_g-hNy6jdl-1SIV8Ao9uMNHiEFOyNiaElDu3NV5-JIy8fwJq3pTL.X0mOEQ.u2YJBIJMHrTaDTFMoEyQ5hTNCUs&quot;
+}
+*/
+
+</code></pre>
+
+<h4 id="step-6">Step 6</h4>
+
+<p>The <strong>client</strong> now have the <strong>Access Token</strong> of the <strong>Resource-Owner</strong>, This token is proof that the <strong>Resource-Owner</strong> did, in fact, authenticate successfully with the <strong>Authorization-Server</strong> and Authorize to the <strong>Client</strong> getting <code>read, write</code> permissions on the <strong>Resource-Server</strong>.</p>
+
+<h3 id="what-could-go-wrong">What Could Go Wrong</h3>
+
+<h4 id="oauth-authorization-server-csrf">OAuth Authorization Server CSRF</h4>
+
+<p>In <strong>Step 3</strong> we mention that there will be a <code>CSRF Token</code> within the Authorize form, this CSRF token will help against CSRF (Cross-Site Request Forgery) attacks. Because the <strong>Client</strong> can simply craft a request that directly confirms access to the <strong>Resource-Owner</strong> data. This would skip the Authorization form and grants the <strong>Client</strong> access to the <strong>Resource-Owner</strong> data without the confirmation of the corresponding <strong>Resource-Owner</strong>.</p>
+
+<h4 id="oauth-consumer-csrf">OAuth Consumer CSRF</h4>
+
+<p>In <strong>Step 2,4</strong> we mention that there will be a <code>State Token</code> within the <strong>Authorization-Server</strong>&rsquo;s <code>/auth</code> endpoint and then with the <code>/callback</code> endpoint, this CSRF token will help against CSRF (Cross-Site Request Forgery) attacks. Because an <code>Attacker</code> can simply stop by <strong>Step 4</strong> and without visiting the callback link, he can trick the <code>victim</code> (that is currently logged into the <strong>client</strong> application) to execute the callback request, the victim account and the OAuth2 account of the attacker get connected. The attacker can now login into the <strong>client</strong> application using his OAuth2 account and can impersonate his victim inside the <strong>client</strong> application.</p>
+
+<h4 id="oauth-phishing-attack">OAuth Phishing Attack</h4>
+
+<p>If the <strong>Authorization-Server</strong> is publicly available, the <code>Attacker</code> can create his own <strong>Client</strong> application with a tricky name and start phishing attack by asking <code>Victims</code> (<strong>Resource-Owner</strong>) to access to there data with full permissions (<code>read, write, delete</code>, etc..)</p>
+
+<p><img src="../../img/oauth-2.0-what-could-go-wrong/oauth-phishing-attack.png" alt="Gmail OAuth Phishing" class="img-fluid img-thumbnail" width="500" height="600"/></p>
+
+<h4 id="sources">Sources:</h4>
+
+<ul>
+<li><a href="https://herolab.usd.de/en/hack-the-box-oouch/">usd AG - usd HeroLab</a></li>
+<li><a href="https://medium.com/bugbountywriteup/oauth2-0-from-scratch-auth-code-flows-and-rbac-with-nodejs-dda9b51a4c36">Anish Sujanani - OAuth2.0 from Scratch</a></li>
+<li><a href="https://medium.com/google-cloud/understanding-oauth2-and-building-a-basic-authorization-server-of-your-own-a-beginners-guide-cf7451a16f66">Ratros Y - Understanding OAuth2</a></li>
+<li><a href="https://www.youtube.com/watch?v=H6MxsFMAoP8&amp;t=1710s">Aaron Parecki - OAuth: When Things Go Wrong</a>
+</br></li>
+</ul>
+	</article>
+</main>
+
+<div id="bottom-nav" class="text-center center-block">
+	<a href=" https://amriunix.com/" class="btn btn-default"><i class="fa fa-home"></i> Home</a>
+</div>
+
+
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "amriunix" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </div>
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-51953135-2', 'auto');
+    ga('send', 'pageview');
+    window.baseURL = "https:\/\/amriunix.com\/";
+  </script>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+  
+  <script src="https://amriunix.com//js/App.js"></script>
+  
+</body>
+</html>
+

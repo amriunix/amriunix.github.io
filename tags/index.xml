@@ -57,6 +57,15 @@
     </item>
     
     <item>
+      <title>Csrf</title>
+      <link>https://amriunix.com/tags/csrf/</link>
+      <pubDate>Sun, 30 Aug 2020 15:37:11 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/csrf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Cve</title>
       <link>https://amriunix.com/tags/cve/</link>
       <pubDate>Thu, 28 Nov 2019 23:13:39 +0100</pubDate>
@@ -93,6 +102,15 @@
     </item>
     
     <item>
+      <title>Jwt</title>
+      <link>https://amriunix.com/tags/jwt/</link>
+      <pubDate>Sun, 30 Aug 2020 15:37:11 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/jwt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Kernel</title>
       <link>https://amriunix.com/tags/kernel/</link>
       <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
@@ -107,6 +125,15 @@
       <pubDate>Fri, 29 Nov 2019 17:03:16 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Oauth</title>
+      <link>https://amriunix.com/tags/oauth/</link>
+      <pubDate>Sun, 30 Aug 2020 15:37:11 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/oauth/</guid>
       <description></description>
     </item>
     

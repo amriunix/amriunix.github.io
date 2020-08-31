@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Oauth on InfoSec Blog</title>
+    <link>https://amriunix.com/tags/oauth/</link>
+    <description>Recent content in Oauth on InfoSec Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 30 Aug 2020 15:37:11 +0100</lastBuildDate>
+    
+	<atom:link href="https://amriunix.com/tags/oauth/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>OAuth 2.0 - What could go wrong</title>
+      <link>https://amriunix.com/post/oauth-2.0-what-could-go-wrong/</link>
+      <pubDate>Sun, 30 Aug 2020 15:37:11 +0100</pubDate>
+      
+      <guid>https://amriunix.com/post/oauth-2.0-what-could-go-wrong/</guid>
+      <description>&lt;p&gt;Nowadays modern web applications may implement or use &lt;code&gt;OAuth 2.0&lt;/code&gt; for there own services. In this post we will understand how OAuth 2.0 works and how it can present vulnerabilities.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
