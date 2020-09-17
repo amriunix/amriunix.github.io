@@ -6,10 +6,19 @@
     <description>Recent content in Tags on InfoSec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Aug 2018 12:09:56 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 17 Sep 2020 06:01:23 +0100</lastBuildDate>
     
 	<atom:link href="https://amriunix.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>0 Day</title>
+      <link>https://amriunix.com/tags/0-day/</link>
+      <pubDate>Thu, 17 Sep 2020 06:01:23 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/0-day/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Arduino</title>
@@ -17,6 +26,15 @@
       <pubDate>Thu, 02 Aug 2018 12:09:56 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/arduino/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Authentication</title>
+      <link>https://amriunix.com/tags/authentication/</link>
+      <pubDate>Thu, 17 Sep 2020 06:01:23 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/authentication/</guid>
       <description></description>
     </item>
     
@@ -48,11 +66,29 @@
     </item>
     
     <item>
+      <title>Bypass</title>
+      <link>https://amriunix.com/tags/bypass/</link>
+      <pubDate>Thu, 17 Sep 2020 06:01:23 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/bypass/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Cache</title>
       <link>https://amriunix.com/tags/cache/</link>
       <pubDate>Mon, 04 Feb 2019 20:43:23 +0100</pubDate>
       
       <guid>https://amriunix.com/tags/cache/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cmis Sql</title>
+      <link>https://amriunix.com/tags/cmis-sql/</link>
+      <pubDate>Thu, 17 Sep 2020 06:01:23 +0100</pubDate>
+      
+      <guid>https://amriunix.com/tags/cmis-sql/</guid>
       <description></description>
     </item>
     

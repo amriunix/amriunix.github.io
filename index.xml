@@ -6,10 +6,21 @@
     <description>Recent content on InfoSec Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 30 Aug 2020 15:37:11 +0100</lastBuildDate>
+    <lastBuildDate>Thu, 17 Sep 2020 06:01:23 +0100</lastBuildDate>
     
 	<atom:link href="https://amriunix.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Alfresco Reset Password Add-on - 0day Vulnerabilities</title>
+      <link>https://amriunix.com/post/alfresco-reset-password-add-on-0-day-vulnerabilities/</link>
+      <pubDate>Thu, 17 Sep 2020 06:01:23 +0100</pubDate>
+      
+      <guid>https://amriunix.com/post/alfresco-reset-password-add-on-0-day-vulnerabilities/</guid>
+      <description>&lt;p&gt;This post is as much about the penetration testing process and the 0-day approach as it is about the vulnerability. I discovered a 0-day vulnerability in one of the most used &lt;a href=&#34;https://www.flex-solution.com/page/alfresco-solution/alfresco-reset-password-add-on&#34;&gt;plugin&lt;/a&gt; for Password Reset on &lt;a href=&#34;https://www.alfresco.com/&#34;&gt;Alfresco&lt;/a&gt; Content Services framework.&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>OAuth 2.0 - What could go wrong</title>
