@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>windows on AMRIUNIX</title>
+    <link>https://amriunix.com/tags/windows/</link>
+    <description>Recent content in windows on AMRIUNIX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 03 Feb 2020 16:25:30 +0100</lastBuildDate><atom:link href="https://amriunix.com/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Windows Kernel Shellcode : TokenStealer</title>
+      <link>https://amriunix.com/post/windows-kernel-shellcode-tokenstealer/</link>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
+      
+      <guid>https://amriunix.com/post/windows-kernel-shellcode-tokenstealer/</guid>
+      <description>&lt;p&gt;A typical Reverse/Bind shellcode will not work when it comes to Windows Kernel Exploitation, most of the time people often use (Nulling out ACLs, Enabling privileges or Replacing process token).&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

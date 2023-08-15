@@ -1,0 +1,75 @@
+baseURL = 'https://amriunix.com/'
+languageCode = 'en-us'
+title = 'AMRIUNIX'
+theme = 'hugo-coder'
+paginate = 5
+disqusShortname = "amriunix"
+googleAnalytics = "G-CP1WJK5HQ7"
+
+[markup.highlight]
+    style = "github-dark"
+
+[params]
+    author = "Oussama Amri"
+    info = "amriunix"
+    description = "InfoSec Blog"
+    keywords = "infosec,cybersecuirty,blockchain,security"
+    avatarurl = "/img/amriunix.jpg"
+    #gravatar = "john.doe@example.com"
+
+    # Custom path to a favicon/touch-icon
+    favicon_32 = "/favicon-32x32.png"
+    favicon_16 = "/favicon-16x16.png"
+    touchIcon = "/apple-touch-icon.png"
+
+    # Series see also post count
+    maxSeeAlsoItems = 5
+
+    # Adds support for Twemoji
+    enableTwemoji = true
+
+    # Specify light/dark colorscheme
+    colorScheme = "auto"
+    hidecolorschemetoggle = false
+
+    
+# Social links 
+# name = Icon name
+# icon = ForkAwesome icon classes - https://forkaweso.me/Fork-Awesome/icons/
+# weight = Icon order
+# url = URL to redirect
+[[params.social]]
+    name = "Github"
+    icon = "fa fa-github fa-2x"
+    weight = 1
+    url = "https://github.com/amriunix/"
+[[params.social]]
+    name = "Twitter"
+    icon = "fa fa-twitter fa-2x"
+    weight = 2
+    url = "https://twitter.com/amriunix/"
+#[[params.social]]
+#    name = "Linkedin"
+#    icon = "fa fa-linkedin fa-2x"
+#    weight = 3
+#    url = "mailto:oussama[at]amriunix.com"
+[[params.social]]
+    name = "Email"
+    icon = "fa fa-envelope fa-2x"
+    weight = 3
+    url = "mailto:oussama[at]amriunix.com"
+
+
+# Menu links
+[[menu.main]]
+    name = "Blog"
+    weight = 1
+    url  = "post/"
+[[menu.main]]
+    name = "About"
+    weight = 2
+    url = "about/"
+
+[markup.goldmark.renderer]
+# Enable embadded JavaScript within posts
+#    unsafe= true

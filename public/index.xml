@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AMRIUNIX</title>
+    <link>https://amriunix.com/</link>
+    <description>Recent content on AMRIUNIX</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 03 Feb 2020 16:25:30 +0100</lastBuildDate><atom:link href="https://amriunix.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Windows Kernel Shellcode : TokenStealer</title>
+      <link>https://amriunix.com/post/windows-kernel-shellcode-tokenstealer/</link>
+      <pubDate>Mon, 03 Feb 2020 16:25:30 +0100</pubDate>
+      
+      <guid>https://amriunix.com/post/windows-kernel-shellcode-tokenstealer/</guid>
+      <description>&lt;p&gt;A typical Reverse/Bind shellcode will not work when it comes to Windows Kernel Exploitation, most of the time people often use (Nulling out ACLs, Enabling privileges or Replacing process token).&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://amriunix.com/about/</link>
+      <pubDate>Wed, 01 Aug 2018 22:36:24 +0100</pubDate>
+      
+      <guid>https://amriunix.com/about/</guid>
+      <description>$ whoami My name is Oussama Amri, usually going by the alias &amp;ldquo;amriunix&amp;rdquo;. More than ten years of self made experience in Information Security of various environments. Performed dozens of web application pentesting/hardening tasks (Black/White box), Source code auditing/hardening, network penetration testing, 802.11 penetration testing, binary exploitation and Familiar with multiple scripting languages along with arsenal of penetration testing tools.
+$ contact If you would like to contact me, feel free to do so at any of the usual places:</description>
+    </item>
+    
+  </channel>
+</rss>
