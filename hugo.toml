@@ -3,8 +3,8 @@ languageCode = 'en-us'
 title = 'AMRIUNIX'
 theme = 'hugo-coder'
 paginate = 5
+googleAnalytics = "G-1NCNEQNX2H"
 disqusShortname = "amriunix"
-googleAnalytics = "G-CP1WJK5HQ7"
 
 [markup.highlight]
     style = "github-dark"
@@ -15,9 +15,9 @@ googleAnalytics = "G-CP1WJK5HQ7"
     description = "InfoSec Blog"
     keywords = "infosec,cybersecuirty,blockchain,security"
     avatarurl = "/img/amriunix.jpg"
-    #gravatar = "john.doe@example.com"
 
     # Custom path to a favicon/touch-icon
+    faviconSVG = "/favicon.ico"
     favicon_32 = "/favicon-32x32.png"
     favicon_16 = "/favicon-16x16.png"
     touchIcon = "/apple-touch-icon.png"

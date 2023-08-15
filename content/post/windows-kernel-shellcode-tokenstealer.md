@@ -1,11 +1,8 @@
 ---
 title: "Windows Kernel Shellcode : TokenStealer"
-author: "Oussama Amri"
 tags: ["windows", "exploit", "shellcode", "kernel", "token"]
-series: "Windows Exploitation 101"
 date: 2020-02-03T16:25:30+01:00
 draft: false
-comments: true
 ---
 
 A typical Reverse/Bind shellcode will not work when it comes to Windows Kernel Exploitation, most of the time people often use (Nulling out ACLs, Enabling privileges or Replacing process token).
