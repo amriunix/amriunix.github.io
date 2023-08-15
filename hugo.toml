@@ -4,7 +4,6 @@ title = 'AMRIUNIX'
 theme = 'hugo-coder'
 paginate = 5
 googleAnalytics = "G-1NCNEQNX2H"
-disqusShortname = "amriunix"
 
 [markup.highlight]
     style = "github-dark"
@@ -15,6 +14,9 @@ disqusShortname = "amriunix"
     description = "InfoSec Blog"
     keywords = "infosec,cybersecuirty,blockchain,security"
     avatarurl = "/img/amriunix.jpg"
+
+    # Self hosted JS Script for Commento
+    commentoURL = "https://amriunix.com"
 
     # Custom path to a favicon/touch-icon
     faviconSVG = "/favicon.ico"
