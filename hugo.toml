@@ -15,9 +15,6 @@ googleAnalytics = "G-1NCNEQNX2H"
     keywords = "infosec,cybersecuirty,blockchain,security"
     avatarurl = "/img/amriunix.jpg"
 
-    # Self hosted JS Script for Commento
-    commentoURL = "https://amriunix.com"
-
     # Custom path to a favicon/touch-icon
     faviconSVG = "/favicon.ico"
     favicon_32 = "/favicon-32x32.png"
@@ -34,6 +31,20 @@ googleAnalytics = "G-1NCNEQNX2H"
     colorScheme = "auto"
     hidecolorschemetoggle = false
 
+[params.giscus] # https://giscus.app
+    repo = "amriunix/amriunix.github.io"
+    repoID = "R_kgDOKHfR7A"
+    category = "Giscus.app"
+    categoryID = "DIC_kwDOKHfR7M4CYoMl"
+    mapping = "pathname"
+    term = "0"
+    strict = "1"
+    reactionsEnabled = "1"
+    emitMetadata = "0"
+    inputPosition = "top"
+    theme = "light"
+    lang = "en"
+    loading = "lazy"
     
 # Social links 
 # name = Icon name
