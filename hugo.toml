@@ -2,7 +2,7 @@ baseURL = 'https://amriunix.com/'
 languageCode = 'en-us'
 title = 'AMRIUNIX'
 theme = 'hugo-coder'
-paginate = 5
+paginate = 20
 googleAnalytics = "G-1NCNEQNX2H"
 
 [markup.highlight]
