@@ -6,7 +6,7 @@ draft: false
 ```bash
 $ whoami
 ```
-I go by the name **Oussama Amri**, experienced and dedicated cybersecurity professional with over a decade of hands-on experience in the field. Known in the community as 'amriunix,' I have honed my skills through years of self-guided learning and practical application, including participation in CTFs challenges. My journey has taken me from a pentesting role by auditing infrastructure, web applications, and performn source code review to an application security engineering. I have also contributed significantly to the web3 ecosystem by conducting audits and ensuring the security of applications. In my recent role, I have been instrumental in securing the Software Development Life Cycle (SDLC), managing bug bounty programs, and formulating comprehensive security strategies for startups.
+I go by the name **Oussama Amri**, experienced and dedicated cybersecurity professional with over a decade of hands-on experience in the field. Known in the community as `amriunix`, I have honed my skills through years of self-guided learning and practical application, including participation in CTFs challenges. My journey has taken me from a pentesting role by auditing infrastructure, web applications, and performn source code review to an application security engineering. I have also contributed significantly to the web3 ecosystem by conducting audits and ensuring the security of applications. In my recent role, I have been instrumental in securing the Software Development Life Cycle (SDLC), managing bug bounty programs, and formulating comprehensive security strategies for startups.
 
 ```bash
 $ contact
