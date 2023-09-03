@@ -1,9 +1,15 @@
 ---
-title: "Windows Kernel Shellcode : TokenStealer"
-tags: ["windows", "exploit", "shellcode", "kernel", "token"]
-date: 2020-02-03T16:25:30+01:00
-comments: true
 draft: false
+date: 2020-02-03T16:25:30+01:00
+title: "Windows Kernel Shellcode : TokenStealer"
+description: "the Process Token Replacement Shellcode, the concept revolves around locating a privileged process and transferring its token to an unprivileged process."
+slug: "windows-kernel-shellcode-tokenstealer"
+authors: ["Oussama Amri"]
+tags: ["windows", "exploit", "shellcode", "kernel", "token"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/windows-kernel-shellcode-tokenstealer/"]
 ---
 
 A typical approach involving Reverse/Bind shellcode won't prove effective for Windows Kernel Exploitation. More often than not, practitioners resort to techniques such as Nulling out ACLs, Enabling privileges or Replacing process token.

@@ -1,9 +1,15 @@
 ---
-title: "Memcached Enumeration"
-tags: ["cache", "linux"]
-date: 2019-02-04T20:43:23+01:00
-comments: true
 draft: false
+date: 2019-02-04T20:43:23+01:00
+title: "Memcached Enumeration"
+description: "Memcached is one of them and I'd like to talk about it and how to extract informations from it."
+slug: "memcached-enumeration"
+authors: ["Oussama Amri"]
+tags: ["cache", "linux"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/memcached-enumeration/"]
 ---
 
 A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I'd like to talk about it and how to extract informations from it.

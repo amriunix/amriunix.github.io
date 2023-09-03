@@ -61,23 +61,23 @@ googleAnalytics = "G-1NCNEQNX2H"
     icon = "fa fa-twitter fa-2x"
     weight = 2
     url = "https://twitter.com/amriunix/"
-#[[params.social]]
-#    name = "Linkedin"
-#    icon = "fa fa-linkedin fa-2x"
-#    weight = 3
-#    url = "mailto:oussama[at]amriunix.com"
 [[params.social]]
     name = "Email"
     icon = "fa fa-envelope fa-2x"
     weight = 3
     url = "mailto:oussama[at]amriunix.com"
+[[params.social]]
+    name = "About"
+    icon = "fa fa-id-card fa-2x"
+    weight = 4
+    url = "/about"
 
 
 # Menu links
 [[menu.main]]
     name = "Blog"
     weight = 1
-    url  = "post/"
+    url  = "posts/"
 [[menu.main]]
     name = "About"
     weight = 2

@@ -1,9 +1,15 @@
 ---
-title: "Alfresco Reset Password Add-on - 0day Vulnerabilities"
-tags: ["bypass", "authentication", "cmis-sql", "0-day"]
-date: 2020-09-17T06:01:23+01:00
-comments: true
 draft: false
+date: 2020-09-17T06:01:23+01:00
+title: "Alfresco Reset Password Add-on - 0day Vulnerabilities"
+description: "a 0-day vulnerability in one of the most used plugin for Password Reset on Alfresco Content Services framework."
+slug: "alfresco-reset-password-add-on-0-day-vulnerabilities"
+authors: ["Oussama Amri"]
+tags: ["bypass", "authentication", "cmis-sql", "0-day"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/alfresco-reset-password-add-on-0-day-vulnerabilities/"]
 ---
 
 This post is as much about the penetration testing process and the 0-day approach as it is about the vulnerability. I discovered a 0-day vulnerability in one of the most used [plugin](https://www.flex-solution.com/page/alfresco-solution/alfresco-reset-password-add-on) for Password Reset on [Alfresco](https://www.alfresco.com/) Content Services framework.

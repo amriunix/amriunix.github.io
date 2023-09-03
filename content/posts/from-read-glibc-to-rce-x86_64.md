@@ -1,9 +1,15 @@
 ---
-title: "From read@GLIBC to RCE in X86_64"
-tags: ["linux", "exploit", "rce", "buffer-overflow"]
-date: 2019-11-29T17:03:16+01:00
-comments: true
 draft: false
+date: 2019-11-29T17:03:16+01:00
+title: "From read@GLIBC to RCE in X86_64"
+description: "New technique for Arbitrary Code Execution only by using the `read` function from libc."
+slug: "from-read-glibc-to-rce-x86_64"
+authors: ["Oussama Amri"]
+tags: ["linux", "exploit", "rce", "buffer-overflow"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/from-read-glibc-to-rce-x86_64/"]
 ---
 
 While playing some pwn in **HackZone** CTF, i figured out a new technique for Arbitrary Code Execution only by using the `read` function from libc.

@@ -1,9 +1,15 @@
 ---
-title: "Sigreturn-Oriented Programming (SROP)"
-tags: ["exploit", "srop", "linux"]
-date: 2018-11-04T11:23:06+01:00
-comments: true
 draft: false
+date: 2018-11-04T11:23:06+01:00
+title: "Sigreturn-Oriented Programming (SROP)"
+description: "Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code."
+slug: "sigreturn-oriented-programming-srop"
+authors: ["Oussama Amri"]
+tags: ["exploit", "srop", "linux"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/sigreturn-oriented-programming-srop/"]
 ---
 
 Sigreturn-oriented programming (SROP) is a exploit development technique used to execute code, this attack employs the same basic assumptions behind the return-oriented programming (ROP) technique.

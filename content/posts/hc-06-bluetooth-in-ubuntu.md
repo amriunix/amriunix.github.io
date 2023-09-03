@@ -1,9 +1,15 @@
 ---
-title: "HC 06 Bluetooth in Ubuntu"
-tags: ["arduino", "bluetooth", "hc-06"]
-date: 2018-08-02T12:09:56+01:00
-comments: true
 draft: false
+date: 2018-08-02T12:09:56+01:00
+title: "HC 06 Bluetooth in Ubuntu"
+description: "HC-06 Bluetooth in Ubuntu, which is commonly used in embedded systems such as arduino."
+slug: "hc-06-bluetooth-in-ubuntu"
+authors: ["Oussama Amri"]
+tags: ["arduino", "bluetooth", "hc-06"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/hc-06-bluetooth-in-ubuntu/"]
 ---
 
 ## TL;DR

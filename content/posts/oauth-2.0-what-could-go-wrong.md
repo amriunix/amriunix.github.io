@@ -1,9 +1,15 @@
 ---
-title: "OAuth 2.0 - What could go wrong"
-tags: ["csrf", "oauth", "jwt"]
-date: 2020-08-30T15:37:11+01:00
-comments: true
 draft: false
+date: 2020-08-30T15:37:11+01:00
+title: "OAuth 2.0 - What could go wrong"
+description: "Nowadays modern web applications may implement or use OAuth 2.0 for there own services."
+slug: "oauth-2.0-what-could-go-wrong"
+authors: ["Oussama Amri"]
+tags: ["csrf", "oauth", "jwt"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/oauth-2.0-what-could-go-wrong/"]
 ---
 
 

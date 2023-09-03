@@ -1,9 +1,15 @@
 ---
-title: "Deep dive into DNS messages"
-tags: ["dns", "packet", "python"]
-date: 2018-08-02T18:51:42+01:00
-comments: true
 draft: false
+date: 2018-08-02T18:51:42+01:00
+title: "Deep dive into DNS messages"
+description: "DNS is used to map human-readable domain names (such as example.com) to machine-readable IP addresses."
+slug: "deep-dive-into-dns-messages"
+authors: ["Oussama Amri"]
+tags: ["dns", "packet", "python"]
+categories: []
+externalLink: ""
+series: []
+aliases: ["/post/deep-dive-into-dns-messages/"]
 ---
 
 In this Post, I'd like to talk about the packet structure of DNS as well as how to implement it into python script to start asking and receiving answers about domain resolution.
