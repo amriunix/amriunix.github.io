@@ -4,6 +4,7 @@ title = 'AMRIUNIX'
 theme = 'hugo-coder'
 paginate = 20
 googleAnalytics = "G-1NCNEQNX2H"
+disqusShortname = "amriunix"
 
 [markup.highlight]
     style = "github-dark"
@@ -31,20 +32,20 @@ googleAnalytics = "G-1NCNEQNX2H"
     colorScheme = "auto"
     hidecolorschemetoggle = false
 
-[params.giscus] # https://giscus.app
-    repo = "amriunix/amriunix.github.io"
-    repoID = "R_kgDOKHfR7A"
-    category = "Giscus.app"
-    categoryID = "DIC_kwDOKHfR7M4CYoMl"
-    mapping = "pathname"
-    term = "0"
-    strict = "1"
-    reactionsEnabled = "1"
-    emitMetadata = "0"
-    inputPosition = "top"
-    theme = "light"
-    lang = "en"
-    loading = "lazy"
+#[params.giscus] # https://giscus.app
+#    repo = "amriunix/amriunix.github.io"
+#    repoID = "R_kgDOKHfR7A"
+#    category = "Giscus.app"
+#    categoryID = "DIC_kwDOKHfR7M4CYoMl"
+#    mapping = "pathname"
+#    term = "0"
+#    strict = "1"
+#    reactionsEnabled = "1"
+#    emitMetadata = "0"
+#    inputPosition = "top"
+#    theme = "light"
+#    lang = "en"
+#    loading = "lazy"
     
 # Social links 
 # name = Icon name
