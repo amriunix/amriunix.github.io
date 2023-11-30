@@ -13,7 +13,6 @@ $ contact
 ```
 If you would like to contact me, feel free to do so at any of the usual places:
 
-* [Twitter](https://twitter.com/amriunix)
 * [Github](https://github.com/amriunix)
 * [Email](mailto:oussama[at]amriunix.com)
 
