@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <title>
+  Memcached Enumeration · AMRIUNIX
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Oussama Amri">
+<meta name="description" content="Memcached is one of them and I&#39;d like to talk about it and how to extract informations from it.">
+<meta name="keywords" content="infosec,cybersecuirty,web3,blockchain,security">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Memcached Enumeration">
+  <meta name="twitter:description" content="Memcached is one of them and I&#39;d like to talk about it and how to extract informations from it.">
+
+<meta property="og:url" content="http://localhost:1313/posts/memcached-enumeration/">
+  <meta property="og:site_name" content="AMRIUNIX">
+  <meta property="og:title" content="Memcached Enumeration">
+  <meta property="og:description" content="Memcached is one of them and I&#39;d like to talk about it and how to extract informations from it.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-02-04T20:43:23+01:00">
+    <meta property="article:modified_time" content="2019-02-04T20:43:23+01:00">
+    <meta property="article:tag" content="Cache">
+    <meta property="article:tag" content="Linux">
+
+
+
+
+<link rel="canonical" href="http://localhost:1313/posts/memcached-enumeration/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.css" media="screen">
+
+
+
+
+
+
+  
+    
+    
+    <link rel="stylesheet" href="/css/coder-dark.css" media="screen">
+  
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+
+
+<body class="preload-transitions colorscheme-auto">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="http://localhost:1313/">
+      AMRIUNIX
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="http://localhost:1313/posts/memcached-enumeration/">
+              Memcached Enumeration
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2019-02-04T20:43:23&#43;01:00">
+                February 4, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              2-minute read
+            </span>
+          </div>
+          
+          
+          <div class="tags">
+  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+    <span class="tag">
+      <a href="/tags/cache/">Cache</a>
+    </span>
+      <span class="separator">•</span>
+    <span class="tag">
+      <a href="/tags/linux/">Linux</a>
+    </span></div>
+
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&rsquo;d like to talk about it and how to extract informations from it.</p>
+<h2 id="tldr">
+  TL;DR
+  <a class="heading-link" href="#tldr">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p><a href="https://memcached.org/"  class="external-link" target="_blank" rel="noopener">Memcached</a> is a distributed memory object caching system, is an in-memory key-value store for small chunks of arbitrary data (strings, objects) from results of database calls, API calls, or page rendering.</p>
+<h2 id="security">
+  Security
+  <a class="heading-link" href="#security">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<figure><img src="/img/memcached-enumeration/memchached-tcp-port.png" width="90%">
+</figure>
+
+<p>Memcached exposes TCP port <strong>11211</strong> and bind it to localhost, however it&rsquo;s still possible to communicate with this port via SSRF or literary movement techniques.</p>
+<h2 id="protocol">
+  Protocol
+  <a class="heading-link" href="#protocol">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Clients of memcached communicate with server through TCP connections. A simple raw commands can be performed to do various things with memcached.</p>
+<figure><img src="/img/memcached-enumeration/memcached-cheat-sheet.png" width="90%">
+</figure>
+
+<p>More Commands can be found <a href="https://github.com/memcached/memcached/blob/master/doc/protocol.txt"  class="external-link" target="_blank" rel="noopener">here.</a></p>
+<h1 id="memcached-extractor">
+  Memcached Extractor
+  <a class="heading-link" href="#memcached-extractor">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Now let&rsquo;s see how to extract the slabs from a memcached instance and then find the keys and values stored in those slabs.<!-- raw HTML omitted -->
+First, let&rsquo;s connect to the server using <code>netcat</code></p>
+<blockquote>
+<p><code>nc 127.0.0.1 11211</code></p>
+</blockquote>
+<p>After successfully connected, let&rsquo;s print memory statistics with :</p>
+<blockquote>
+<p><code>stats slabs</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>STAT 16:chunk_size 2904
+</span></span><span style="display:flex;"><span>STAT 16:chunks_per_page 361
+</span></span><span style="display:flex;"><span>STAT 16:total_pages 1
+</span></span><span style="display:flex;"><span>STAT 16:total_chunks 361
+</span></span><span style="display:flex;"><span>STAT 16:used_chunks 0
+</span></span><span style="display:flex;"><span>STAT 16:free_chunks 361
+</span></span><span style="display:flex;"><span>STAT 16:free_chunks_end 0
+</span></span><span style="display:flex;"><span>STAT 16:mem_requested 0
+</span></span><span style="display:flex;"><span>STAT 16:get_hits 14
+</span></span><span style="display:flex;"><span>STAT 16:cmd_set 7
+</span></span><span style="display:flex;"><span>STAT 16:delete_hits 0
+</span></span><span style="display:flex;"><span>STAT 16:incr_hits 0
+</span></span><span style="display:flex;"><span>STAT 16:decr_hits 0
+</span></span><span style="display:flex;"><span>STAT 16:cas_hits 0
+</span></span><span style="display:flex;"><span>STAT 16:cas_badval 0
+</span></span><span style="display:flex;"><span>STAT 16:touch_hits 0
+</span></span><span style="display:flex;"><span>STAT 26:chunk_size 27120
+</span></span><span style="display:flex;"><span>STAT 26:chunks_per_page 38
+</span></span><span style="display:flex;"><span>STAT 26:total_pages 1
+</span></span><span style="display:flex;"><span>STAT 26:total_chunks 38
+</span></span><span style="display:flex;"><span>STAT 26:used_chunks 0
+</span></span><span style="display:flex;"><span>STAT 26:free_chunks 38
+</span></span><span style="display:flex;"><span>STAT 26:free_chunks_end 0
+</span></span><span style="display:flex;"><span>STAT 26:mem_requested 0
+</span></span><span style="display:flex;"><span>STAT 26:get_hits 7046
+</span></span><span style="display:flex;"><span>STAT 26:cmd_set 33
+</span></span><span style="display:flex;"><span>STAT 26:delete_hits 0
+</span></span><span style="display:flex;"><span>STAT 26:incr_hits 0
+</span></span><span style="display:flex;"><span>STAT 26:decr_hits 0
+</span></span><span style="display:flex;"><span>STAT 26:cas_hits 0
+</span></span><span style="display:flex;"><span>STAT 26:cas_badval 0
+</span></span><span style="display:flex;"><span>STAT 26:touch_hits 0
+</span></span><span style="display:flex;"><span>STAT active_slabs 2
+</span></span><span style="display:flex;"><span>STAT total_malloced 2078904
+</span></span><span style="display:flex;"><span>END
+</span></span></code></pre></div><p>If you notice in our example we have two different values <strong>16</strong> and <strong>26</strong>. We will be using those values to fetch the key&rsquo;s names associated with them.</p>
+<blockquote>
+<p><code>stats cachedump 16 0</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ITEM stock [2807 b; 1549317135 s]
+</span></span><span style="display:flex;"><span>END
+</span></span></code></pre></div><blockquote>
+<p><code>stats cachedump 26 0</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>ITEM users [24625 b; 1549317140 s]
+</span></span><span style="display:flex;"><span>END
+</span></span></code></pre></div><p>As you can see now we have the key&rsquo;s names which are <code>stock</code> and <code>users</code>, now let&rsquo;s extract all the data associated with those keys with the command :</p>
+<blockquote>
+<p><code>get stock</code></p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>VALUE stock 0 2807
+</span></span><span style="display:flex;"><span>{&#34;1&#34;: {&#34;product&#34;: &#34;Apples - Sliced / Wedge&#34;, &#34;qty&#34;: 568}, &#34;2&#34;: {&#34;product&#34;: &#34;Appetizer - Tarragon Chicken&#34;, &#34;qty&#34;: 16}}
+</span></span></code></pre></div><h4 id="references">
+  References:
+  <a class="heading-link" href="#references">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h4>
+<ul>
+<li><a href="https://lzone.de//cheat-sheet/memcached"  class="external-link" target="_blank" rel="noopener">lzone.de</a></li>
+<li><a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/gather/memcached_extractor.rb"  class="external-link" target="_blank" rel="noopener">MSF</a></li>
+</ul>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        <div id="disqus_thread"></div>
+<script>
+  window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "amriunix" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    
+    document.addEventListener('themeChanged', function (e) { 
+        if (document.readyState == 'complete') {
+          DISQUS.reset({ reload: true, config: disqus_config });
+        }
+    });
+</script>
+        
+        
+        
+        
+
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2024
+     Oussama Amri 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.js"></script>
+  
+
+  
+
+  
+
+
+  
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NCNEQNX2H"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-1NCNEQNX2H');
+        }
+      </script>
+    
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+
+</html>

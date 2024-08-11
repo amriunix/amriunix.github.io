@@ -1,19 +1,27 @@
 baseURL = 'https://amriunix.com/'
-languageCode = 'en-us'
+languagecode = "en"
+defaultcontentlanguage = "en"
 title = 'AMRIUNIX'
 theme = 'hugo-coder'
 paginate = 20
 googleAnalytics = "G-1NCNEQNX2H"
-disqusShortname = "amriunix"
+
+
+
+[services]
+[services.disqus]
+# disqusShortname = "amriunix"
+# Enable Disqus comments
+    shortname = "amriunix"
 
 [markup.highlight]
     style = "github-dark"
 
 [params]
     author = "Oussama Amri"
-    info = "amriunix"
+    info = "Web3 Security"
     description = "InfoSec Blog"
-    keywords = "infosec,cybersecuirty,blockchain,security"
+    keywords = "infosec,cybersecuirty,web3,blockchain,security"
     avatarurl = "/img/amriunix.jpg"
 
     # Custom path to a favicon/touch-icon
@@ -54,14 +62,19 @@ disqusShortname = "amriunix"
 # url = URL to redirect
 [[params.social]]
     name = "Github"
-    icon = "fa fa-github fa-2x"
+    icon = "fa-brands fa-github fa-2x"
     weight = 1
     url = "https://github.com/amriunix/"
-#[[params.social]]
-#    name = "Twitter"
-#    icon = "fa fa-twitter fa-2x"
-#    weight = 2
-#    url = "https://twitter.com/amriunix/"
+[[params.social]]
+    name = "Twitter"
+    icon = "fa-brands fa-x-twitter fa-2x"
+    weight = 2
+    url = "https://x.com/amriunix"
+[[params.social]]
+    name = "Linkedin"
+    icon = "fa-brands fa-linkedin fa-2x"
+    weight = 2
+    url = "https://www.linkedin.com/in/amriunix/"
 [[params.social]]
     name = "Email"
     icon = "fa fa-envelope fa-2x"

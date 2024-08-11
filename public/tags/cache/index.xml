@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cache on AMRIUNIX</title>
+    <link>http://localhost:1313/tags/cache/</link>
+    <description>Recent content in Cache on AMRIUNIX</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 04 Feb 2019 20:43:23 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/cache/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Memcached Enumeration</title>
+      <link>http://localhost:1313/posts/memcached-enumeration/</link>
+      <pubDate>Mon, 04 Feb 2019 20:43:23 +0100</pubDate>
+      <guid>http://localhost:1313/posts/memcached-enumeration/</guid>
+      <description>A server cache is an information technology for the temporary storage of data, to reduce server lag. I find a lot of those technologies in my daily work while doing penetration testing. Memcached is one of them and I&amp;rsquo;d like to talk about it and how to extract informations from it.&#xA;TL;DR Link to heading Memcached is a distributed memory object caching system, is an in-memory key-value store for small chunks of arbitrary data (strings, objects) from results of database calls, API calls, or page rendering.</description>
+    </item>
+  </channel>
+</rss>

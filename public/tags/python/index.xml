@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on AMRIUNIX</title>
+    <link>http://localhost:1313/tags/python/</link>
+    <description>Recent content in Python on AMRIUNIX</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 02 Aug 2018 18:51:42 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deep dive into DNS messages</title>
+      <link>http://localhost:1313/posts/deep-dive-into-dns-messages/</link>
+      <pubDate>Thu, 02 Aug 2018 18:51:42 +0100</pubDate>
+      <guid>http://localhost:1313/posts/deep-dive-into-dns-messages/</guid>
+      <description>In this Post, I&amp;rsquo;d like to talk about the packet structure of DNS as well as how to implement it into python script to start asking and receiving answers about domain resolution.&#xA;TL;DR Link to heading DNS is used to map human-readable domain names (such as example.com) to machine-readable IP addresses (like 193.84.16.134). To use DNS, we send a query to a DNS server. This query contains the domain name we’re looking up.</description>
+    </item>
+  </channel>
+</rss>

