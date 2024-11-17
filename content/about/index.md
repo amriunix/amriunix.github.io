@@ -6,8 +6,12 @@ draft: false
 ```bash
 $ whoami
 ```
-I go by the name **Oussama [Amri](https://amri.family)**, experienced and dedicated cybersecurity professional with over a decade of hands-on experience in the field. Known in the community as `amriunix`, I have honed my skills through years of self-guided learning and practical application, including participation in CTFs challenges. My journey has taken me from a pentesting role by auditing infrastructure, web applications, and performn source code review to an application security engineering. I have also contributed significantly to the web3 ecosystem by conducting audits and ensuring the security of applications. In my recent role, I have been instrumental in securing the Software Development Life Cycle (SDLC), managing bug bounty programs, and formulating comprehensive security strategies for startups.
+Hey! I go by the name **Oussama Amri**, experienced and dedicated cybersecurity professional with over a decade of hands-on experience. My journey has taken me from a pentesting role by auditing system and network infrastructure, web apps, and web3 audit to formulating comprehensive security strategies for web3 startups.
 
+My journey has taken me from a pentesting role by auditing infrastructure, web applications, and performing source code review to an application security engineering. I have also contributed significantly to the web3 ecosystem by conducting audits and ensuring the security of applications. 
+In my recent role, I have been instrumental in securing the Software Development Life Cycle (SDLC), managing bug bounty programs, and formulating comprehensive security strategies for startups.
+
+I believe in a holistic approach to security, combining technical skill with an understanding of how people and policies shape our digital landscape. My passion lies in not just fortifying digital assets but also in building resilient security cultures within organizations. As I continue in my career, I'm committed to staying ahead in the ever-evolving field of cybersecurity.
 ```bash
 $ contact
 ```
